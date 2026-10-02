@@ -57,7 +57,9 @@ class AttackGraph:
         for u, v, kind in topology.links:
             p = edge_probability(kind, self.assets[u], self.assets[v])
             self.g.add_edge(u, v, p=p, base_p=p, kind=kind)
-        self.threat: dict[str, float] = {}
+        self.base_threat: dict[str, float] = {}  # ML evidence before defenses
+        self.node_mult: dict[str, float] = {}  # residual multipliers from applied defenses
+        self.threat: dict[str, float] = {}  # effective local compromise probability
         self.threat_info: dict[str, ThreatAssessment] = {}
         self.compromised: set[str] = set()
 
@@ -71,45 +73,46 @@ class AttackGraph:
         for t in threats:
             if t.host_id in self.assets:
                 score = float(t.probability * t.confidence)
-                self.threat[t.host_id] = max(self.threat.get(t.host_id, 0.0), score)
+                self.base_threat[t.host_id] = max(self.base_threat.get(t.host_id, 0.0), score)
                 self.threat_info[t.host_id] = t
                 self.attacker_activity = max(self.attacker_activity, score)
+        self._refresh_threat()
 
     def mark_compromised(self, host: str) -> None:
         self.compromised.add(host)
-        self.threat[host] = 1.0
+        self.base_threat[host] = 1.0
         self.attacker_activity = 1.0
+        self._refresh_threat()
 
-    def harden_edges(self, factors: dict[tuple[str, str], float]) -> None:
-        """Permanently reduce edge probabilities (an approved defense took effect)."""
-        for (u, v), f in factors.items():
-            if self.g.has_edge(u, v):
-                self.g[u][v]["p"] *= 1.0 - f
+    def clear_threat(self, host: str) -> None:
+        self.base_threat.pop(host, None)
+        self.threat_info.pop(host, None)
+        self.compromised.discard(host)
+        self._refresh_threat()
 
     def apply_defenses(self, actions, effectiveness: dict | None = None) -> None:
-        """Reset edges to their base probabilities, then apply ``actions``.
+        """Re-derive the defended graph from base state plus ``actions``.
 
-        ``effectiveness`` (ActionType -> eff) overrides each action's nominal
-        effectiveness, which lets the adaptive engine re-derive the defended
-        graph whenever its effectiveness estimates are updated.
+        Edge and node effects are applied exactly as in the optimiser's effect
+        model, so the risk realised after approval equals the predicted risk.
+        ``effectiveness`` (ActionType -> eff) overrides nominal effectiveness,
+        which lets the adaptive engine re-derive the graph whenever its
+        effectiveness estimates change.
         """
         for u, v in self.g.edges:
             self.g[u][v]["p"] = self.g[u][v]["base_p"]
+        self.node_mult = {}
         for a in actions:
             eff = (effectiveness or {}).get(a.type, a.effectiveness)
             for (u, v), f in a.edge_effects.items():
                 if self.g.has_edge(u, v):
                     self.g[u][v]["p"] *= 1.0 - eff * f
+            for n, f in a.node_effects.items():
+                self.node_mult[n] = self.node_mult.get(n, 1.0) * (1.0 - eff * f)
+        self._refresh_threat()
 
-    def reduce_threat(self, factors: dict[str, float]) -> None:
-        for n, f in factors.items():
-            if n in self.threat:
-                self.threat[n] *= 1.0 - f
-
-    def clear_threat(self, host: str) -> None:
-        self.threat.pop(host, None)
-        self.threat_info.pop(host, None)
-        self.compromised.discard(host)
+    def _refresh_threat(self) -> None:
+        self.threat = {n: t * self.node_mult.get(n, 1.0) for n, t in self.base_threat.items()}
 
     # ---- views ---------------------------------------------------------------
     @property

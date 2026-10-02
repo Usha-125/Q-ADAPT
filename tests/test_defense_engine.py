@@ -65,3 +65,16 @@ def test_prescreen_returns_k(setup):
     _, _, ev = setup
     idx = prescreen(ev, 8)
     assert len(idx) == 8 and len(set(idx)) == 8
+
+
+def test_apply_defenses_matches_evaluator_prediction(setup):
+    from qadapt.attack_graph import propagate, total_risk
+    ag, actions, ev = setup
+    x = np.zeros(len(actions), dtype=int)
+    for i, a in enumerate(actions):
+        if a.type in (ActionType.QUARANTINE_ENDPOINT, ActionType.ISOLATE_HOST, ActionType.BLOCK_IP):
+            x[i] = 1
+    predicted = ev.residual_risk(x)
+    ag.apply_defenses([actions[i] for i in np.flatnonzero(x)])
+    cg = ag.compile()
+    assert total_risk(cg, propagate(cg)) == pytest.approx(predicted, abs=1e-9)

@@ -37,6 +37,8 @@ def test_optimize_approve_reduces_risk(client):
     assert rep["result"]["feasible"] and rep["selected"]
     ov = client.post(f"/api/runs/{rep['run_id']}/decision", json={"decision": "approve"}).json()
     assert ov["current_risk"] < before
+    # the realised risk after approval must equal the optimiser's prediction
+    assert ov["current_risk"] == pytest.approx(rep["risk_after"], abs=1e-4)
     assert ov["applied_actions"]
     assert client.get(f"/api/runs/{rep['run_id']}").json()["decisions"]
 

@@ -127,9 +127,6 @@ class AQDOController:
         self.applied.extend(actions)
         eff = self.learner.estimates() if self.policy == "aqdo" else None
         self.ag.apply_defenses(self.applied, eff)
-        for a in actions:  # containment of an already-detected host
-            if a.type.value in ("isolate_host", "quarantine_endpoint"):
-                self.ag.reduce_threat({a.target: a.effectiveness})
 
 
 def run_episode(topology: Topology, policy: str = "aqdo", steps: int = 8,

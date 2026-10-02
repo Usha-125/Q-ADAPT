@@ -73,9 +73,6 @@ class SOCSession:
     def apply(self, actions: list[DefenseAction]) -> None:
         self.applied.extend(actions)
         self.ag.apply_defenses(self.applied)
-        for a in actions:
-            if a.type.value in ("isolate_host", "quarantine_endpoint") and a.target in self.ag.threat:
-                self.ag.reduce_threat({a.target: a.effectiveness})
 
     def defended_edges(self) -> dict[tuple[str, str], float]:
         return {(u, v): 1 - d["p"] / d["base_p"] for u, v, d in self.ag.g.edges(data=True)
