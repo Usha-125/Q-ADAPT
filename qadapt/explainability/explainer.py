@@ -93,9 +93,13 @@ def explain(problem: DefenseProblem, x: np.ndarray, n_rejected: int = 4) -> list
                 else:
                     names.append(f"would violate {v.split(':')[0]} limit")
             reasons.append("Infeasible: " + "; ".join(names))
-        if q is not None and i < q.n_decision:
+        if q is not None and i < q.n_decision and "h" in q.meta:
+            # redundancy: positive interaction cancels a large share of the standalone gain
+            alpha = max(problem.config.weights.alpha, 1e-12)
+            gain_i = abs(q.meta["h"][i])
             red = [problem.actions[j].id for j in np.flatnonzero(x)
-                   if j < q.n_decision and q.quad[min(i, j), max(i, j)] > 1e-3]
+                   if j < q.n_decision and (min(i, j), max(i, j)) not in problem.policy.conflicts
+                   and q.quad[min(i, j), max(i, j)] / alpha > 0.4 * gain_i]
             if red:
                 reasons.append("Largely redundant with " + ", ".join(red))
         if delta > 0:
