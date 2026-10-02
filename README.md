@@ -19,7 +19,7 @@ Q-ADAPT is an adaptive, quantum-assisted **cyber-defense decision engine**: neit
 Detect → Understand → Predict → Optimize → Defend → Learn
 ```
 
-![CI](https://github.com/usha-125/q-adapt/actions/workflows/ci.yml/badge.svg)
+![CI](https://github.com/Usha-125/Q-ADAPT/actions/workflows/ci.yml/badge.svg)
 
 ---
 
