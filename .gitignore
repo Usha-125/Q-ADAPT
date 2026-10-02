@@ -24,3 +24,9 @@ models/*.joblib
 # frontend
 frontend/node_modules/
 frontend/dist/
+
+# test artefacts
+.coverage
+.coverage.*
+htmlcov/
+.hypothesis/
