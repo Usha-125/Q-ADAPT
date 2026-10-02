@@ -32,9 +32,21 @@ class OptimizationConfig:
     max_disruption: float | None = None
     max_actions: int | None = None
     # How inequality constraints are embedded into the QUBO:
-    #   "slack"      exact, adds ceil(log2) slack qubits per constraint
+    #   "slack"      adds `slack_resolution` qubits per constraint; approximate for real-valued weights
     #   "unbalanced" no extra qubits (Montanez-Barrera et al., 2022 penalisation)
     constraint_encoding: str = "unbalanced"
     penalty: float | None = None  # None = derived automatically from objective scale
     slack_resolution: int = 4  # bits of discretisation for slack encoding
     protected_assets: tuple[str, ...] = ()  # assets that must not be disrupted/isolated
+
+    def __post_init__(self):
+        for name in ("budget", "max_time", "max_disruption", "max_actions"):
+            v = getattr(self, name)
+            if v is not None and v < 0:
+                raise ValueError(f"{name} must be >= 0 (got {v})")
+        if self.constraint_encoding not in ("slack", "unbalanced"):
+            raise ValueError("constraint_encoding must be 'slack' or 'unbalanced'")
+        if self.slack_resolution < 1:
+            raise ValueError("slack_resolution must be >= 1")
+        if self.penalty is not None and self.penalty <= 0:
+            raise ValueError("penalty must be > 0")

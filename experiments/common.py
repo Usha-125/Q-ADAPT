@@ -10,40 +10,9 @@ from pathlib import Path
 import numpy as np
 from scipy import stats
 
-from qadapt.attack_graph import AttackGraph, generate_topology
-from qadapt.core.config import OptimizationConfig
-from qadapt.core.models import ThreatAssessment
-from qadapt.defense_engine import ActionGenerator, DefenseEvaluator, prescreen
-from qadapt.optimization import DefenseProblem
+from qadapt.benchmarks import make_instance, random_threats  # noqa: F401 (re-exported)
 
 RESULTS = Path(__file__).resolve().parents[1] / "results"
-
-
-def random_threats(ag: AttackGraph, rng: np.random.Generator, k: int = 2) -> list[ThreatAssessment]:
-    """ML-style evidence on a random internet-facing host and k-1 random internal hosts."""
-    entry = list(ag.topology.entry_points)
-    internal = [a for a in ag.assets if a not in entry and not a.startswith("FW")]
-    hosts = [rng.choice(entry)] + list(rng.choice(internal, size=max(0, k - 1), replace=False))
-    cats = ["WEB_ATTACK", "EXPLOIT", "INFILTRATION", "BOTNET", "BRUTE_FORCE"]
-    return [ThreatAssessment(str(h), str(rng.choice(cats)), float(rng.uniform(0.6, 0.97)),
-                             float(rng.uniform(0.75, 0.97)), int(rng.integers(5, 200)),
-                             "203.0.113.7") for h in hosts]
-
-
-def make_instance(n_actions: int, seed: int, n_nodes: int = 40,
-                  config: OptimizationConfig | None = None) -> DefenseProblem:
-    """A random defense-portfolio instance with exactly ``n_actions`` candidates."""
-    rng = np.random.default_rng(seed)
-    ag = AttackGraph(generate_topology(n_nodes, seed=seed))
-    ag.apply_threats(random_threats(ag, rng, k=3))
-    acts = ActionGenerator(ag).generate()
-    ev = DefenseEvaluator(ag, acts)
-    keep = prescreen(ev, n_actions)
-    ev = DefenseEvaluator(ag, [acts[i] for i in keep])
-    if config is None:
-        total = ev.cost.sum()
-        config = OptimizationConfig(budget=round(0.35 * total, 3), max_actions=max(2, n_actions // 3))
-    return DefenseProblem(ev, config)
 
 
 def mean_ci(values, conf: float = 0.95) -> dict:

@@ -59,6 +59,7 @@ class AttackGraph:
             self.g.add_edge(u, v, p=p, base_p=p, kind=kind)
         self.base_threat: dict[str, float] = {}  # ML evidence before defenses
         self.node_mult: dict[str, float] = {}  # residual multipliers from applied defenses
+        self.applied_defenses: list = []  # defenses currently in force
         self.threat: dict[str, float] = {}  # effective local compromise probability
         self.threat_info: dict[str, ThreatAssessment] = {}
         self.compromised: set[str] = set()
@@ -102,6 +103,7 @@ class AttackGraph:
         for u, v in self.g.edges:
             self.g[u][v]["p"] = self.g[u][v]["base_p"]
         self.node_mult = {}
+        self.applied_defenses = list(actions)
         for a in actions:
             eff = (effectiveness or {}).get(a.type, a.effectiveness)
             for (u, v), f in a.edge_effects.items():

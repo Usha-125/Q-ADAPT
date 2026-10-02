@@ -80,6 +80,8 @@ class RiskModel:
         if self.model == "severity_only":
             t = cg.threat * (np.ones(cg.n_nodes) if node_mult is None else node_mult)
             t = np.where(np.arange(cg.n_nodes) == 0, 0.0, t)
+            if edge_mult is not None and np.ndim(edge_mult) == 2:  # keep the batch shape
+                t = np.broadcast_to(t, (np.shape(edge_mult)[0], cg.n_nodes))
             return t, t * crit
         P = propagate(cg, edge_mult, node_mult)
         if self.model == "propagation":

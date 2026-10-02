@@ -28,10 +28,10 @@ class DetectRequest(BaseModel):
 
 
 class WeightsIn(BaseModel):
-    alpha: float = 1.0
-    beta: float = 0.15
-    gamma: float = 0.10
-    delta: float = 0.20
+    alpha: float = Field(1.0, ge=0)
+    beta: float = Field(0.15, ge=0)
+    gamma: float = Field(0.10, ge=0)
+    delta: float = Field(0.20, ge=0)
 
 
 class OptimizeRequest(BaseModel):
@@ -41,10 +41,10 @@ class OptimizeRequest(BaseModel):
     backend: Literal["statevector", "qiskit"] = "statevector"
     shots: int = Field(1024, ge=64, le=100000)
     max_qubits: int = Field(12, ge=2, le=20)
-    budget: float | None = 0.5
-    max_time: float | None = None
-    max_disruption: float | None = None
-    max_actions: int | None = None
+    budget: float | None = Field(0.5, ge=0)
+    max_time: float | None = Field(None, ge=0)
+    max_disruption: float | None = Field(None, ge=0)
+    max_actions: int | None = Field(None, ge=0)
     encoding: Literal["unbalanced", "slack"] = "unbalanced"
     surrogate: Literal["regression", "expansion"] = "regression"
     weights: WeightsIn = Field(default_factory=WeightsIn)
@@ -59,6 +59,6 @@ class CompareRequest(OptimizeRequest):
 
 
 class DecisionIn(BaseModel):
-    action_ids: list[str] | None = None  # None = all recommended actions
+    action_ids: list[str] | None = None  # None = all recommended actions; [] is rejected
     decision: Literal["approve", "reject"] = "approve"
     analyst: str = "analyst"

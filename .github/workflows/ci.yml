@@ -19,8 +19,8 @@ jobs:
         run: pip install -e ".[quantum,api,dev]"
       - name: Lint
         run: ruff check qadapt tests experiments
-      - name: Test
-        run: pytest
+      - name: Test (unit + integration + property)
+        run: pytest --ignore=tests/e2e --cov=qadapt --cov-report=term --cov-fail-under=90
 
   frontend:
     runs-on: ubuntu-latest
@@ -36,3 +36,24 @@ jobs:
           cache-dependency-path: frontend/package-lock.json
       - run: npm ci
       - run: npm run build
+
+  e2e:
+    runs-on: ubuntu-latest
+    needs: [python, frontend]
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - name: Build dashboard
+        working-directory: frontend
+        run: npm ci && npm run build
+      - name: Install
+        run: |
+          pip install -e ".[quantum,api,dev,e2e]"
+          python -m playwright install --with-deps chromium
+      - name: Browser end-to-end tests
+        run: pytest tests/e2e -v

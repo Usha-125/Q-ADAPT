@@ -175,7 +175,10 @@ class Solver(ABC):
 
     def solve(self, problem: DefenseProblem) -> SolveResult:
         t0 = time.perf_counter()
-        x, info = self._solve(problem)
+        if problem.n == 0:  # nothing to decide: the empty portfolio is the only option
+            x, info = np.zeros(0, dtype=int), {"note": "no candidate actions"}
+        else:
+            x, info = self._solve(problem)
         runtime = time.perf_counter() - t0
         x = np.asarray(x).round().astype(int)
         return SolveResult(

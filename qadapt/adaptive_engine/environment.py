@@ -117,8 +117,8 @@ class AttackEnvironment:
     def _observe_with_detector(self, new: list[str]) -> list[ThreatAssessment]:
         from qadapt.ml_engine.synthetic import generate_flows
         assets = self.ag.assets
-        attacked = {assets[v].ip: ATTACK_BY_TYPE.get(assets[v].type, "EXPLOIT").replace(
-            "WEB_ATTACK", "WEB_ATTACK") for v in new if self.rng.random() < self.detect_rate}
+        attacked = {assets[v].ip: ATTACK_BY_TYPE.get(assets[v].type, "EXPLOIT")
+                    for v in new if self.rng.random() < self.detect_rate}
         flows = generate_flows(
             n=400, attack_fraction=0.15 if attacked else 0.0,
             hosts=[a.ip for a in assets.values()], attacked_hosts=attacked or None,

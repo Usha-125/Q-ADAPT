@@ -8,6 +8,7 @@ const ALL = ["qaoa", "exhaustive", "milp", "greedy", "simulated_annealing", "gen
 export default function Benchmark() {
   const [rows, setRows] = useState<SolveResult[]>([]);
   const [meta, setMeta] = useState<{ n_actions: number; base_risk: number } | null>(null);
+  const [solverErrors, setSolverErrors] = useState<Record<string, string>>({});
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [maxQ, setMaxQ] = useState(12);
@@ -20,6 +21,7 @@ export default function Benchmark() {
       const r = await api.compare({ ...defaultParams, max_qubits: maxQ, budget }, ALL);
       setRows(r.results);
       setMeta({ n_actions: r.n_actions, base_risk: r.base_risk });
+      setSolverErrors(r.errors ?? {});
     } catch (e) { setError(String(e)); } finally { setBusy(false); }
   };
 
@@ -38,6 +40,9 @@ export default function Benchmark() {
           {busy && <Spinner label="Benchmarking" />}
         </div>
         <div className="mt-2"><ErrorBox error={error} /></div>
+        {Object.entries(solverErrors).map(([s, msg]) => (
+          <div key={s} className="mt-2 text-xs text-amber-300">Skipped {s}: {msg}</div>
+        ))}
         <p className="mt-2 text-xs text-slate-500">
           All solvers are scored on the same ground-truth objective (propagated residual risk + weighted cost, time,
           disruption). "exhaustive" is the true optimum; "random_sampling" uses the same sample budget as QAOA shots.

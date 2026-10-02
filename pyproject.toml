@@ -29,7 +29,8 @@ dependencies = [
 quantum = ["qiskit>=1.0", "qiskit-aer>=0.14"]
 xgboost = ["xgboost>=2.0"]
 api = ["fastapi>=0.110", "uvicorn>=0.27"]
-dev = ["pytest>=7.4", "httpx>=0.27", "ruff>=0.4"]
+dev = ["pytest>=7.4", "pytest-cov>=4.1", "hypothesis>=6.90", "httpx>=0.27", "ruff>=0.4"]
+e2e = ["playwright>=1.45"]
 report = ["matplotlib>=3.7"]
 all = ["qadapt[quantum,xgboost,api,dev,report]"]
 
@@ -42,6 +43,10 @@ include = ["qadapt*"]
 [tool.pytest.ini_options]
 testpaths = ["tests"]
 addopts = "-q"
+markers = [
+    "e2e: browser end-to-end tests (need built frontend + Chromium)",
+    "slow: tests that take more than a few seconds",
+]
 
 [tool.ruff]
 line-length = 100

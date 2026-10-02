@@ -17,7 +17,7 @@ Two surrogates are provided:
 
 Operational terms (cost, time, disruption) are linear. Constraints are added as
 penalties: policy rules exactly; inequality limits either via binary slack
-variables (exact, extra qubits) or by unbalanced penalisation (no extra qubits,
+variables (extra qubits; exact only when weights lie on the slack grid) or by unbalanced penalisation (no extra qubits,
 Montanez-Barrera et al., 2022).
 """
 
@@ -194,6 +194,10 @@ def build_defense_qubo(problem, surrogate: str = "regression", encoding: str | N
     constraints = problem.constraints()
     slack_names: list[str] = []
     slack_specs = []
+    # A limit of 0 means "no action with positive weight": encode it exactly as linear
+    # exclusions rather than normalising by 1/lim (which would blow coefficients up).
+    zero_limits = [(name, wts) for name, wts, lim in constraints if lim <= 1e-12]
+    constraints = [(name, wts, lim) for name, wts, lim in constraints if lim > 1e-12]
     if encoding == "slack":
         for name, wts, lim in constraints:
             if wts.sum() <= lim:  # never binding
@@ -223,6 +227,9 @@ def build_defense_qubo(problem, surrogate: str = "regression", encoding: str | N
         q.add_linear(i, -penalty)
 
     # inequality constraints ---------------------------------------------------------
+    for _, wts in zero_limits:
+        for i in np.flatnonzero(wts > 0):
+            q.add_linear(int(i), penalty)
     for name, wts, lim in constraints:
         if wts.sum() <= lim:
             continue

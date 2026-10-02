@@ -63,8 +63,16 @@ def _train(args) -> None:
 
 
 def _benchmark(args) -> None:
-    from experiments.experiment3_optimization import main as bench
-    bench(["--sizes", *map(str, args.sizes), "--seeds", str(args.seeds)])
+    from qadapt.benchmarks import compare_solvers
+    rows = compare_solvers(args.sizes, args.seeds)
+    if args.json:
+        print(json.dumps(rows, indent=2))
+        return
+    print(f"{'n':>3}  {'solver':<20} {'mean gap':>9} {'optimal':>8} {'feasible':>9} {'runtime':>9}")
+    for r in rows:
+        gap = "n/a" if r["mean_gap"] is None else f"{r['mean_gap']:.2%}"
+        print(f"{r['n']:>3}  {r['solver']:<20} {gap:>9} {r['optimal_rate']:>8.0%} "
+              f"{r['feasible_rate']:>9.0%} {r['runtime_s']:>8.2f}s")
 
 
 def _episode(args) -> None:
@@ -111,6 +119,7 @@ def main(argv: list[str] | None = None) -> None:
     b = sub.add_parser("benchmark", help="QAOA vs classical baselines")
     b.add_argument("--sizes", type=int, nargs="+", default=[6, 8, 10, 12])
     b.add_argument("--seeds", type=int, default=3)
+    b.add_argument("--json", action="store_true")
     b.set_defaults(fn=_benchmark)
 
     e = sub.add_parser("episode", help="simulate an adaptive defense episode")

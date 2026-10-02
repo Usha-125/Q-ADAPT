@@ -130,7 +130,12 @@ Q(x) = α(1 + hᵀx + xᵀJx) + βcᵀx + γτᵀx + δdᵀx + P · [policy term
 * mandatory: `P (1 − x_i)`
 * inequality `wᵀx ≤ L` uses one of two encodings:
   * `slack`: `P (wᵀx/L + Σ_b 2^b Δ s_b/L − 1)²`, with `⌈log₂⌉` slack qubits per
-    constraint. It is exact but adds qubits.
+    constraint. It adds qubits and is exact only when the weights lie on the slack grid.
+    With real-valued costs, feasible portfolios off the grid pay a small penalty and
+    slight overruns pay only a tiny quadratic one, so the QUBO minimizer can be
+    infeasible: it was feasible in 50–75% of the constrained scenarios of Experiment 7.
+  * A limit of exactly 0 is encoded as linear exclusions `P x_i` for every action with
+    positive weight, which avoids the `1/L` normalization blowing up.
   * `unbalanced` (default; Montañez-Barrera et al., 2022): with `ĥ = 1 − wᵀx/L`, the
     term is `P (−λ₁ ĥ + λ₂ ĥ²)`. It needs no extra qubits, rewards slack only boundedly
     and penalizes violations quadratically.

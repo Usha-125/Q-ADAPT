@@ -182,8 +182,11 @@ def optimize(req: OptimizeRequest):
             raise HTTPException(409, "no candidate actions left")
         if req.solver == "exhaustive" and problem.n > 22:
             raise HTTPException(400, "exhaustive search limited to 22 actions")
-        problem.qubo(surrogate=req.surrogate, encoding=req.encoding)
-        report = pipe.decide(make_solver(req.solver, **_solver_kw(req.solver, req)), problem)
+        try:
+            problem.qubo(surrogate=req.surrogate, encoding=req.encoding)
+            report = pipe.decide(make_solver(req.solver, **_solver_kw(req.solver, req)), problem)
+        except ValueError as e:  # e.g. too many qubits for the simulator
+            raise HTTPException(400, str(e)) from e
         out = to_jsonable(report.to_dict())
         run_id = storage.save_run(req.solver, req.model_dump(), out)
         session.pending = Pending(run_id, problem, report.selected_actions)
@@ -196,17 +199,28 @@ def compare(req: CompareRequest):
     with session.lock:
         pipe = QAdaptPipeline(session.ag, _config(req), max_qubits=req.max_qubits)
         problem = pipe.build_problem(exclude={a.id for a in session.applied})
+        if problem.n == 0:
+            raise HTTPException(409, "no candidate actions left")
+        unknown = [s for s in req.solvers if s not in SOLVERS]
+        if unknown:
+            raise HTTPException(400, f"unknown solvers {unknown}")
         problem.qubo(surrogate=req.surrogate, encoding=req.encoding)
-        rows = []
+        rows, errors = [], {}
         for name in req.solvers:
-            if name not in SOLVERS or (name == "exhaustive" and problem.n > 22):
+            if name == "exhaustive" and problem.n > 22:
+                errors[name] = "exhaustive search limited to 22 actions"
                 continue
-            r = make_solver(name, **_solver_kw(name, req)).solve(problem)
+            try:
+                r = make_solver(name, **_solver_kw(name, req)).solve(problem)
+            except ValueError as e:  # one solver failing must not sink the comparison
+                errors[name] = str(e)
+                continue
             rows.append(to_jsonable(r.to_dict()))
         best = min((r["objective"] for r in rows if r["feasible"]), default=None)
         for r in rows:
-            r["gap_to_best"] = None if best is None else r["objective"] - best
-        return {"n_actions": problem.n, "base_risk": problem.evaluator.base_risk, "results": rows}
+            r["gap_to_best"] = None if best is None or not r["feasible"] else r["objective"] - best
+        return {"n_actions": problem.n, "base_risk": problem.evaluator.base_risk,
+                "results": rows, "errors": errors}
 
 
 @app.get("/api/runs")
@@ -229,7 +243,9 @@ def decide(run_id: int, d: DecisionIn):
         p = session.pending
         if p is None or p.run_id != run_id:
             raise HTTPException(409, "run is not the pending recommendation")
-        ids = d.action_ids or [a.id for a in p.recommended]
+        if d.action_ids is not None and not d.action_ids:
+            raise HTTPException(400, "action_ids is empty; omit it to decide on all recommended actions")
+        ids = d.action_ids if d.action_ids is not None else [a.id for a in p.recommended]
         by_id = {a.id: a for a in p.problem.actions}
         unknown = [i for i in ids if i not in by_id]
         if unknown:

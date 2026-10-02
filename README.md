@@ -221,6 +221,22 @@ re-optimization) delivers most of the value. QAOA is a viable, feasibility-prese
 solver for small instances but, as expected today, does not beat good classical
 heuristics.
 
+## Testing
+
+```bash
+pip install -e ".[quantum,api,dev]"
+pytest                                   # 326 unit + integration + property tests, ~1 min
+pytest --cov=qadapt                      # coverage (99%)
+cd frontend && npm run build && cd .. && pip install -e ".[e2e]" && pytest tests/e2e  # browser tests
+```
+
+| Suite | What it covers |
+|---|---|
+| `tests/unit/` | Every module in isolation. Edge cases include zero actions, a single action, zero or negative limits, infeasible policies, qubit limits, NaN/inf flows, malformed and real-format CSVs (repeated headers, both CIC spellings, UNSW-NB15), model persistence, CVaR, polish, warm starts and reproducibility. |
+| `tests/property/` | Hypothesis-generated invariants: QUBO↔Ising equivalence, normalized QAOA states, bounded and monotone risk propagation, adding a defense never increases risk, every solver ≥ the exact optimum, batch/scalar consistency. |
+| `tests/integration/` | ML → graph → QUBO → solver → applied defense (realized risk equals predicted risk); every solver and risk model in the pipeline; adaptive episodes for every policy, including one driven by the real ML detector; API workflows (validation, partial approval, stale runs, staged attack, audit, persistence); CLI commands. |
+| `tests/e2e/` | Playwright drives the built dashboard against the live API across every screen: ML detection, optimize → approve → advance the attack, and the solver benchmark, with no console errors allowed. |
+
 ## Scientific positioning and claims
 
 Q-ADAPT is set up to avoid the common pitfalls in quantum-security research:

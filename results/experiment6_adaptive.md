@@ -5,8 +5,8 @@
 | stage | event | risk before | risk after | recommended defense |
 |---|---|---|---|---|
 | T1 | Attack detected on Web Server | 0.775 | 0.249 | Isolate WEB-01, Block malicious IP 203.0.113.7 |
-| T2 | Attacker moved to Application Server | 0.599 | 0.217 | Revoke credentials on APP-01, Increase monitoring on APP-01, Block malicious IP 203.0.113.7 |
-| T3 | Database becomes the target | 0.341 | 0.247 | Increase monitoring on APP-01, Increase monitoring on DB-01, Block malicious IP 203.0.113.7 |
+| T2 | Attacker moved to Application Server | 0.599 | 0.246 | Revoke credentials on APP-01, Increase monitoring on APP-01, Isolate DC-01 |
+| T3 | Database becomes the target | 0.376 | 0.297 | Revoke credentials on DB-01, Increase monitoring on DB-01, Increase monitoring on WEB-01 |
 
 ## B. Stochastic campaigns: static vs adaptive policies
 
@@ -27,7 +27,7 @@
 
 | environment | comparison | mean difference | p-value |
 |---|---|---|---|
-| demo (14 nodes) | aqdo vs static | -1.4569 | 8.845e-05 |
+| demo (14 nodes) | aqdo vs static | -1.4569 | 1.907e-06 |
 | demo (14 nodes) | aqdo vs reoptimize | +0.0181 | 0.2157 |
 | demo (14 nodes) | reoptimize vs static | -1.4750 | 1.907e-06 |
 | enterprise-40 | aqdo vs static | -0.3504 | 0.001068 |

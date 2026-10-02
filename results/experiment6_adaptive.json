@@ -1,6 +1,6 @@
 {
   "experiment": "experiment6_adaptive",
-  "timestamp": "2026-10-02 06:45:03",
+  "timestamp": "2026-10-02 08:22:35",
   "platform": "Linux-6.18.44-fc-v51-x86_64-with-glibc2.39",
   "python": "3.11.15",
   "staged": [
@@ -173,7 +173,7 @@
         ],
         "objective": 0.477509,
         "feasible": true,
-        "runtime_s": 0.135,
+        "runtime_s": 0.1293,
         "metrics": {
           "residual_risk": 0.24902,
           "risk_reduction": 0.67849,
@@ -290,8 +290,8 @@
             0.0393247587554042,
             0.04057347653793688
           ],
-          "qubo_build_s": 0.009865844000159996,
-          "optimise_s": 0.11906278999958886,
+          "qubo_build_s": 0.012627910999981395,
+          "optimise_s": 0.1108283419999907,
           "expected_energy": 3.7253023285662934,
           "unique_samples": 179,
           "qubo_meta": {
@@ -711,8 +711,8 @@
     },
     {
       "risk_before": 0.59941,
-      "risk_after": 0.21709,
-      "risk_reduction": 0.63783,
+      "risk_after": 0.24626,
+      "risk_reduction": 0.58916,
       "paths_before": 13,
       "paths_after": 3,
       "n_candidates": 12,
@@ -756,6 +756,16 @@
           "time": 0.05,
           "disruption": 0.0,
           "effectiveness": 0.25
+        },
+        {
+          "id": "isolate_host:DB-01",
+          "type": "isolate_host",
+          "target": "DB-01",
+          "description": "Isolate DB-01",
+          "cost": 0.15,
+          "time": 0.1,
+          "disruption": 0.517,
+          "effectiveness": 0.95
         },
         {
           "id": "protect_database:DB-01",
@@ -818,16 +828,6 @@
           "effectiveness": 0.8
         },
         {
-          "id": "block_ip:ATTACKER",
-          "type": "block_ip",
-          "target": "ATTACKER",
-          "description": "Block malicious IP 203.0.113.7",
-          "cost": 0.05,
-          "time": 0.02,
-          "disruption": 0.02,
-          "effectiveness": 0.7
-        },
-        {
           "id": "segment_network:app->data",
           "type": "segment_network",
           "target": "app->data",
@@ -860,14 +860,14 @@
           "effectiveness": 0.25
         },
         {
-          "id": "block_ip:ATTACKER",
-          "type": "block_ip",
-          "target": "ATTACKER",
-          "description": "Block malicious IP 203.0.113.7",
-          "cost": 0.05,
-          "time": 0.02,
-          "disruption": 0.02,
-          "effectiveness": 0.7
+          "id": "isolate_host:DC-01",
+          "type": "isolate_host",
+          "target": "DC-01",
+          "description": "Isolate DC-01",
+          "cost": 0.15,
+          "time": 0.1,
+          "disruption": 0.55,
+          "effectiveness": 0.95
         }
       ],
       "result": {
@@ -879,29 +879,29 @@
           1,
           0,
           0,
-          0,
-          0,
-          0,
-          0,
           1,
+          0,
+          0,
+          0,
+          0,
           0
         ],
-        "objective": 0.445167,
+        "objective": 0.622835,
         "feasible": true,
-        "runtime_s": 0.1303,
+        "runtime_s": 0.1438,
         "metrics": {
-          "residual_risk": 0.21709,
-          "risk_reduction": 0.63783,
-          "cost": 0.2,
-          "time_total": 0.15,
-          "time_to_effect": 0.08,
-          "disruption": 0.19,
+          "residual_risk": 0.24626,
+          "risk_reduction": 0.58916,
+          "cost": 0.3,
+          "time_total": 0.23,
+          "time_to_effect": 0.1,
+          "disruption": 0.72,
           "n_actions": 3
         },
         "selected": [
           "revoke_credentials:APP-01",
           "increase_monitoring:APP-01",
-          "block_ip:ATTACKER"
+          "isolate_host:DC-01"
         ],
         "info": {
           "backend": "statevector",
@@ -920,100 +920,100 @@
           },
           "transpiled": null,
           "params": [
-            5.6082404080539785,
-            -0.7223736476083771
+            5.825715080026408,
+            -0.661398555132972
           ],
           "function_evals": 80,
           "convergence": [
-            0.23672052273273916,
-            0.2450587092380936,
-            0.24630206768754187,
-            0.2233169311214765,
-            0.22003301819277654,
-            0.22365644724238373,
-            0.2173073470519415,
-            0.2158332186284444,
-            0.2205287104873934,
-            0.20977582369950062,
-            0.19260486304071345,
-            0.13795656076366986,
-            0.4286315142677832,
-            0.30605399547705836,
-            0.16311215540934143,
-            0.13603741829165072,
-            0.16354219056627425,
-            0.12728245875615807,
-            0.13807893773619323,
-            0.13461227368576037,
-            0.125165285444144,
-            0.1250773002697289,
-            0.12351036012027755,
-            0.12106427158049504,
-            0.11839442542787623,
-            0.11485090362755834,
-            0.10847891288929515,
-            0.11164287135066578,
-            0.11253028198049636,
-            0.11020893579404395,
-            0.10616103011192154,
-            0.10300730181383769,
-            0.09697831909833166,
-            0.0879055323666562,
-            0.17942941162398113,
-            0.18316362888920742,
-            0.08815913914020065,
-            0.08732576720751611,
-            0.08757693130192837,
-            0.08940797194032835,
-            0.08451691404856743,
-            0.08341420912562253,
-            0.08467429094726253,
-            0.08276608722626783,
-            0.08230163932131185,
-            0.08162531160656822,
-            0.08036528129594203,
-            0.07792272577693021,
-            0.07578903783260724,
-            0.07367221475914051,
-            0.07442475058813072,
-            0.08173000833030866,
-            0.07351316855913176,
-            0.07138456882119877,
-            0.07068410326427021,
-            0.07216495985103058,
-            0.07038412915007639,
-            0.06986845821696605,
-            0.06934662759619992,
-            0.06804622822816794,
-            0.06753666615182696,
-            0.0648755966167064,
-            0.07011927136335168,
-            0.06648723452249881,
-            0.06509817741607593,
-            0.06516103874472173,
-            0.0645324968065196,
-            0.06454856683404452,
-            0.06480942850480907,
-            0.06408448517379343,
-            0.06363868134987277,
-            0.06573343355128998,
-            0.06296800978621664,
-            0.06248920744898398,
-            0.0620220972766235,
-            0.06149069330906589,
-            0.06042744502853741,
-            0.0599129058098775,
-            0.0588317422119214,
-            0.058148610701521136
+            0.23709196378577085,
+            0.24529925734956343,
+            0.2465637183258363,
+            0.22388210151198998,
+            0.22062968335853173,
+            0.22429202007125426,
+            0.2177964068271084,
+            0.21585447739134367,
+            0.22005074852384618,
+            0.21016361299640268,
+            0.1935803713065739,
+            0.13852307877561323,
+            0.42915703442638947,
+            0.3025728652410644,
+            0.12695122397403594,
+            0.19073380482002084,
+            0.13159949935583076,
+            0.1264900236457161,
+            0.13052916263249886,
+            0.12665655850984073,
+            0.12514821201381662,
+            0.12317820876304947,
+            0.12499639366503626,
+            0.12147405246409723,
+            0.12021978352485459,
+            0.12196703371072629,
+            0.118572115168669,
+            0.11706621842888303,
+            0.1169341949699722,
+            0.11442547210708456,
+            0.11096683693685487,
+            0.10876205333481781,
+            0.10541653161756674,
+            0.10194709491780687,
+            0.09668065065990257,
+            0.09849269541109758,
+            0.10395309091329631,
+            0.09515553029772898,
+            0.09533174567109484,
+            0.09549967376511993,
+            0.09453501212481191,
+            0.09344683559424076,
+            0.09237363711837257,
+            0.10140165824981062,
+            0.0901292661924824,
+            0.08899547550471634,
+            0.08777532724770236,
+            0.08660874112058972,
+            0.08365809399021845,
+            0.08374723674818965,
+            0.08300896268657423,
+            0.08343722417101804,
+            0.08341294738340412,
+            0.08239321087314187,
+            0.08209218266224125,
+            0.0844205634887776,
+            0.08129393920797355,
+            0.08058411216630162,
+            0.07931866325764206,
+            0.07692236483651563,
+            0.07221579210012789,
+            0.07052965608937609,
+            0.0831744370418123,
+            0.09717748959987203,
+            0.0704270962765569,
+            0.06358477768993595,
+            0.06264411202391856,
+            0.060307335686013236,
+            0.05882958837213052,
+            0.06462959095461243,
+            0.058106887415055174,
+            0.057877039023090535,
+            0.05746597616029899,
+            0.05714027753202325,
+            0.057014104872256915,
+            0.05967117915676472,
+            0.05615095565534743,
+            0.05558868783207452,
+            0.05521458028846341,
+            0.0547646396995079
           ],
-          "qubo_build_s": 0.009067237000181194,
-          "optimise_s": 0.11485372499964797,
-          "expected_energy": 4.310795419712744,
-          "unique_samples": 214,
+          "qubo_build_s": 0.009354121000001214,
+          "optimise_s": 0.12775397300003988,
+          "expected_energy": 4.602796946346361,
+          "unique_samples": 218,
           "qubo_meta": {
             "surrogate": "regression",
             "encoding": "unbalanced",
-            "penalty": 2.818779864501781,
+            "penalty": 2.9136854297943695,
             "n_constraints": 2,
             "n_slack": 0,
             "weights": {
@@ -1023,15 +1023,15 @@
               "delta": 0.2
             },
             "fidelity": {
-              "r2": 0.9905701343392942,
-              "spearman": 0.9902733679515262,
-              "mae": 0.012691392142574642
+              "r2": 0.988074206713911,
+              "spearman": 0.990142676963207,
+              "mae": 0.01338718940511348
             }
           },
-          "approximation_ratio": 0.9418513892984789,
-          "p_optimal_state": 0.005044897988735349,
-          "optimal_state_amplification": 20.66390216185999,
-          "qubo_optimum": -0.7784913100238589,
+          "approximation_ratio": 0.9452353603004922,
+          "p_optimal_state": 0.0048871029812451085,
+          "optimal_state_amplification": 20.017573811179965,
+          "qubo_optimum": -0.7105042759772886,
           "raw_feasible": true
         }
       },
@@ -1044,7 +1044,7 @@
             "EXPLOIT activity on APP-01 (p=91%)",
             "Asset criticality 0.75; downstream exposure HIGH",
             "Expected risk reduction alone: 40.3%",
-            "Removing it would worsen the plan objective by +0.2901",
+            "Removing it would worsen the plan objective by +0.2555",
             "Cost MEDIUM, response time LOW, business disruption MEDIUM"
           ],
           "factors": {
@@ -1056,7 +1056,7 @@
             "downstream_exposure": 0.511,
             "attack_type": "EXPLOIT",
             "attack_probability": 0.91,
-            "portfolio_contribution": 0.2901
+            "portfolio_contribution": 0.2555
           }
         },
         {
@@ -1067,7 +1067,7 @@
             "EXPLOIT activity on APP-01 (p=91%)",
             "Asset criticality 0.75; downstream exposure HIGH",
             "Expected risk reduction alone: 12.9%",
-            "Removing it would worsen the plan objective by +0.0275",
+            "Removing it would worsen the plan objective by +0.0260",
             "Cost LOW, response time LOW, business disruption LOW"
           ],
           "factors": {
@@ -1079,24 +1079,27 @@
             "downstream_exposure": 0.511,
             "attack_type": "EXPLOIT",
             "attack_probability": 0.91,
-            "portfolio_contribution": 0.0275
+            "portfolio_contribution": 0.026
           }
         },
         {
-          "action_id": "block_ip:ATTACKER",
-          "description": "Block malicious IP 203.0.113.7",
+          "action_id": "isolate_host:DC-01",
+          "description": "Isolate DC-01",
           "selected": true,
           "reasons": [
-            "Expected risk reduction alone: 15.2%",
-            "Removing it would worsen the plan objective by +0.1828",
-            "Cost LOW, response time LOW, business disruption LOW"
+            "Asset criticality 0.95; downstream exposure LOW",
+            "Expected risk reduction alone: 14.7%",
+            "Removing it would worsen the plan objective by +0.0052",
+            "Cost MEDIUM, response time MEDIUM, business disruption HIGH"
           ],
           "factors": {
-            "standalone_risk_reduction": 0.1518,
-            "cost": 0.05,
-            "time": 0.02,
-            "disruption": 0.02,
-            "portfolio_contribution": 0.1828
+            "standalone_risk_reduction": 0.1468,
+            "cost": 0.15,
+            "time": 0.1,
+            "disruption": 0.55,
+            "target_criticality": 0.95,
+            "downstream_exposure": 0.11,
+            "portfolio_contribution": 0.0052
           }
         },
         {
@@ -1104,9 +1107,9 @@
           "description": "Isolate APP-01",
           "selected": false,
           "reasons": [
-            "Infeasible: would violate cardinality limit",
-            "Largely redundant with revoke_credentials:APP-01, increase_monitoring:APP-01, block_ip:ATTACKER",
-            "Adding it would worsen the objective by +0.0847 (extra risk reduction does not justify cost/time/disruption)"
+            "Infeasible: would violate budget limit; would violate cardinality limit",
+            "Largely redundant with revoke_credentials:APP-01, increase_monitoring:APP-01, isolate_host:DC-01",
+            "Adding it would worsen the objective by +0.0894 (extra risk reduction does not justify cost/time/disruption)"
           ],
           "factors": {
             "standalone_risk_reduction": 0.4282,
@@ -1117,7 +1120,7 @@
             "downstream_exposure": 0.511,
             "attack_type": "EXPLOIT",
             "attack_probability": 0.91,
-            "objective_if_added": 0.0847
+            "objective_if_added": 0.0894
           }
         },
         {
@@ -1126,8 +1129,8 @@
           "selected": false,
           "reasons": [
             "Infeasible: would violate budget limit; would violate cardinality limit",
-            "Largely redundant with revoke_credentials:APP-01, increase_monitoring:APP-01, block_ip:ATTACKER",
-            "Adding it would worsen the objective by +0.1274 (extra risk reduction does not justify cost/time/disruption)",
+            "Largely redundant with revoke_credentials:APP-01, increase_monitoring:APP-01, isolate_host:DC-01",
+            "Adding it would worsen the objective by +0.1316 (extra risk reduction does not justify cost/time/disruption)",
             "Long time-to-effect; faster actions give more immediate protection"
           ],
           "factors": {
@@ -1135,26 +1138,7 @@
             "cost": 0.35,
             "time": 0.4,
             "disruption": 0.35,
-            "objective_if_added": 0.1274
-          }
-        },
-        {
-          "action_id": "isolate_host:DC-01",
-          "description": "Isolate DC-01",
-          "selected": false,
-          "reasons": [
-            "Infeasible: would violate cardinality limit",
-            "Largely redundant with revoke_credentials:APP-01, increase_monitoring:APP-01, block_ip:ATTACKER",
-            "Adding it would worsen the objective by +0.0756 (extra risk reduction does not justify cost/time/disruption)"
-          ],
-          "factors": {
-            "standalone_risk_reduction": 0.1468,
-            "cost": 0.15,
-            "time": 0.1,
-            "disruption": 0.55,
-            "target_criticality": 0.95,
-            "downstream_exposure": 0.11,
-            "objective_if_added": 0.0756
+            "objective_if_added": 0.1316
           }
         },
         {
@@ -1162,9 +1146,9 @@
           "description": "Isolate HR-DB",
           "selected": false,
           "reasons": [
-            "Infeasible: would violate cardinality limit",
-            "Largely redundant with revoke_credentials:APP-01, increase_monitoring:APP-01, block_ip:ATTACKER",
-            "Adding it would worsen the objective by +0.1184 (extra risk reduction does not justify cost/time/disruption)"
+            "Infeasible: would violate budget limit; would violate cardinality limit",
+            "Largely redundant with revoke_credentials:APP-01, increase_monitoring:APP-01, isolate_host:DC-01",
+            "Adding it would worsen the objective by +0.1248 (extra risk reduction does not justify cost/time/disruption)"
           ],
           "factors": {
             "standalone_risk_reduction": 0.1391,
@@ -1173,7 +1157,26 @@
             "disruption": 0.501,
             "target_criticality": 0.85,
             "downstream_exposure": 0.214,
-            "objective_if_added": 0.1184
+            "objective_if_added": 0.1248
+          }
+        },
+        {
+          "action_id": "isolate_host:FIN-DB",
+          "description": "Isolate FIN-DB",
+          "selected": false,
+          "reasons": [
+            "Infeasible: would violate budget limit; would violate cardinality limit",
+            "Largely redundant with revoke_credentials:APP-01, increase_monitoring:APP-01, isolate_host:DC-01",
+            "Adding it would worsen the objective by +0.1254 (extra risk reduction does not justify cost/time/disruption)"
+          ],
+          "factors": {
+            "standalone_risk_reduction": 0.1358,
+            "cost": 0.15,
+            "time": 0.1,
+            "disruption": 0.533,
+            "target_criticality": 0.95,
+            "downstream_exposure": 0.11,
+            "objective_if_added": 0.1254
           }
         }
       ],
@@ -1183,7 +1186,7 @@
         "n_slack": 0,
         "surrogate": "regression",
         "encoding": "unbalanced",
-        "penalty": 2.818779864501781,
+        "penalty": 2.9136854297943695,
         "n_constraints": 2,
         "weights": {
           "alpha": 1.0,
@@ -1192,94 +1195,80 @@
           "delta": 0.2
         },
         "fidelity": {
-          "r2": 0.9905701343392942,
-          "spearman": 0.9902733679515262,
-          "mae": 0.012691392142574642
+          "r2": 0.988074206713911,
+          "spearman": 0.990142676963207,
+          "mae": 0.01338718940511348
         },
         "matrix": [
           [
-            -1.28433,
-            1.48892,
-            1.21912,
-            0.89949,
-            1.70472,
-            1.45513,
-            1.44601,
-            1.7014,
-            1.43571,
-            1.69268,
-            0.90194,
-            2.53516
+            -1.32355,
+            1.50119,
+            1.24101,
+            0.93384,
+            1.48667,
+            1.75289,
+            1.50508,
+            1.49944,
+            1.75479,
+            1.47128,
+            1.76971,
+            2.60522
           ],
           [
             0.0,
-            -1.56708,
-            1.421,
-            0.96377,
-            1.76973,
-            1.4343,
-            1.51313,
-            1.7451,
-            1.50028,
-            1.75563,
-            0.88402,
-            2.74155
-          ],
-          [
-            0.0,
-            0.0,
-            -1.4868,
-            0.86867,
-            1.41055,
-            1.17663,
-            1.23444,
-            1.39648,
-            1.25129,
-            1.40912,
-            0.79955,
-            2.11673
+            -1.60666,
+            1.45358,
+            0.98432,
+            1.56433,
+            1.82476,
+            1.46997,
+            1.56608,
+            1.82144,
+            1.56911,
+            1.81587,
+            2.79398
           ],
           [
             0.0,
             0.0,
-            0.0,
-            -1.04812,
-            1.00313,
-            0.89278,
-            0.91498,
-            1.00027,
-            0.91378,
-            0.99638,
-            0.7144,
-            1.30214
+            -1.51978,
+            0.88825,
+            1.27922,
+            1.46016,
+            1.21752,
+            1.29173,
+            1.46114,
+            1.28852,
+            1.44019,
+            2.15139
           ],
           [
             0.0,
             0.0,
             0.0,
-            0.0,
-            -1.37276,
-            1.6827,
-            1.68195,
-            2.04861,
-            1.68351,
-            2.02845,
-            0.97713,
-            3.15649
+            -1.07898,
+            0.94822,
+            1.03517,
+            0.92749,
+            0.94687,
+            1.03741,
+            0.94212,
+            1.03128,
+            1.33656
           ],
           [
             0.0,
             0.0,
             0.0,
             0.0,
-            0.0,
-            -1.29942,
-            1.41775,
-            1.68164,
-            1.43471,
-            1.70292,
-            0.95588,
-            2.48789
+            -1.32338,
+            1.81623,
+            1.46446,
+            1.4733,
+            1.73389,
+            1.4677,
+            1.73729,
+            2.63195
           ],
           [
             0.0,
@@ -1287,13 +1276,13 @@
             0.0,
             0.0,
             0.0,
-            0.0,
-            -1.28023,
-            1.75033,
-            1.43725,
-            1.69798,
-            0.8849,
-            2.56497
+            -1.41479,
+            1.7317,
+            1.7233,
+            2.10902,
+            1.74202,
+            2.10047,
+            3.26776
           ],
           [
             0.0,
@@ -1302,12 +1291,12 @@
             0.0,
             0.0,
             0.0,
-            0.0,
-            -1.37023,
-            1.69849,
-            2.04162,
-            0.97967,
-            3.15695
+            -1.34642,
+            1.46243,
+            1.73633,
+            1.49298,
+            1.76349,
+            2.56534
           ],
           [
             0.0,
@@ -1317,11 +1306,11 @@
             0.0,
             0.0,
             0.0,
-            0.0,
-            -1.28877,
-            1.76372,
-            0.88181,
-            2.56829
+            -1.3282,
+            1.80748,
+            1.46577,
+            1.74306,
+            2.64642
           ],
           [
             0.0,
@@ -1332,10 +1321,10 @@
             0.0,
             0.0,
             0.0,
-            0.0,
-            -1.37395,
-            0.97269,
-            3.16285
+            -1.42302,
+            1.75328,
+            2.11546,
+            3.26747
           ],
           [
             0.0,
@@ -1347,9 +1336,9 @@
             0.0,
             0.0,
             0.0,
-            0.0,
-            -1.09124,
-            1.22903
+            -1.33251,
+            1.79948,
+            2.62818
           ],
           [
             0.0,
@@ -1362,8 +1351,22 @@
             0.0,
             0.0,
             0.0,
+            -1.41718,
+            3.26213
+          ],
+          [
             0.0,
-            -1.13379
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            -1.15156
           ]
         ],
         "var_names": [
@@ -1371,13 +1374,13 @@
           "isolate_host:APP-01",
           "revoke_credentials:APP-01",
           "increase_monitoring:APP-01",
+          "isolate_host:DB-01",
           "protect_database:DB-01",
           "isolate_host:DC-01",
           "isolate_host:FIN-DB",
           "protect_database:FIN-DB",
           "isolate_host:HR-DB",
           "protect_database:HR-DB",
-          "block_ip:ATTACKER",
           "segment_network:app->data"
         ]
       },
@@ -1448,9 +1451,9 @@
       ]
     },
     {
-      "risk_before": 0.3408,
-      "risk_after": 0.24686,
-      "risk_reduction": 0.27564,
+      "risk_before": 0.37605,
+      "risk_after": 0.29706,
+      "risk_reduction": 0.21006,
       "paths_before": 5,
       "paths_after": 5,
       "n_candidates": 12,
@@ -1466,24 +1469,24 @@
           "effectiveness": 0.95
         },
         {
-          "id": "revoke_credentials:APP-01",
-          "type": "revoke_credentials",
-          "target": "APP-01",
-          "description": "Revoke credentials on APP-01",
-          "cost": 0.1,
-          "time": 0.08,
-          "disruption": 0.17,
-          "effectiveness": 0.9
-        },
-        {
-          "id": "increase_monitoring:APP-01",
+          "id": "increase_monitoring:ADMIN",
           "type": "increase_monitoring",
-          "target": "APP-01",
-          "description": "Increase monitoring on APP-01",
+          "target": "ADMIN",
+          "description": "Increase monitoring on ADMIN",
           "cost": 0.05,
           "time": 0.05,
           "disruption": 0.0,
           "effectiveness": 0.25
+        },
+        {
+          "id": "isolate_host:APP-01",
+          "type": "isolate_host",
+          "target": "APP-01",
+          "description": "Isolate APP-01",
+          "cost": 0.15,
+          "time": 0.1,
+          "disruption": 0.4675,
+          "effectiveness": 0.95
         },
         {
           "id": "isolate_host:DB-01",
@@ -1516,14 +1519,14 @@
           "effectiveness": 0.25
         },
         {
-          "id": "isolate_host:DC-01",
-          "type": "isolate_host",
-          "target": "DC-01",
-          "description": "Isolate DC-01",
-          "cost": 0.15,
-          "time": 0.1,
-          "disruption": 0.55,
-          "effectiveness": 0.95
+          "id": "protect_database:FIN-DB",
+          "type": "protect_database",
+          "target": "FIN-DB",
+          "description": "Protect database FIN-DB",
+          "cost": 0.2,
+          "time": 0.2,
+          "disruption": 0.097,
+          "effectiveness": 0.8
         },
         {
           "id": "increase_monitoring:WEB-01",
@@ -1536,14 +1539,14 @@
           "effectiveness": 0.25
         },
         {
-          "id": "block_ip:ATTACKER",
-          "type": "block_ip",
-          "target": "ATTACKER",
-          "description": "Block malicious IP 203.0.113.7",
-          "cost": 0.05,
-          "time": 0.02,
-          "disruption": 0.02,
-          "effectiveness": 0.7
+          "id": "segment_network:app->data",
+          "type": "segment_network",
+          "target": "app->data",
+          "description": "Segment app -> data boundary",
+          "cost": 0.35,
+          "time": 0.4,
+          "disruption": 0.35,
+          "effectiveness": 0.85
         },
         {
           "id": "segment_network:corp->data",
@@ -1578,14 +1581,14 @@
       ],
       "selected": [
         {
-          "id": "increase_monitoring:APP-01",
-          "type": "increase_monitoring",
-          "target": "APP-01",
-          "description": "Increase monitoring on APP-01",
-          "cost": 0.05,
-          "time": 0.05,
-          "disruption": 0.0,
-          "effectiveness": 0.25
+          "id": "revoke_credentials:DB-01",
+          "type": "revoke_credentials",
+          "target": "DB-01",
+          "description": "Revoke credentials on DB-01",
+          "cost": 0.1,
+          "time": 0.08,
+          "disruption": 0.188,
+          "effectiveness": 0.9
         },
         {
           "id": "increase_monitoring:DB-01",
@@ -1598,14 +1601,14 @@
           "effectiveness": 0.25
         },
         {
-          "id": "block_ip:ATTACKER",
-          "type": "block_ip",
-          "target": "ATTACKER",
-          "description": "Block malicious IP 203.0.113.7",
+          "id": "increase_monitoring:WEB-01",
+          "type": "increase_monitoring",
+          "target": "WEB-01",
+          "description": "Increase monitoring on WEB-01",
           "cost": 0.05,
-          "time": 0.02,
-          "disruption": 0.02,
-          "effectiveness": 0.7
+          "time": 0.05,
+          "disruption": 0.0,
+          "effectiveness": 0.25
         }
       ],
       "result": {
@@ -1613,33 +1616,33 @@
         "x": [
           0,
           0,
-          1,
           0,
           0,
           1,
-          0,
+          1,
           0,
           1,
+          0,
           0,
           0,
           0
         ],
-        "objective": 0.762864,
+        "objective": 0.875544,
         "feasible": true,
-        "runtime_s": 0.1308,
+        "runtime_s": 0.1377,
         "metrics": {
-          "residual_risk": 0.24686,
-          "risk_reduction": 0.27564,
-          "cost": 0.15,
-          "time_total": 0.12,
-          "time_to_effect": 0.05,
-          "disruption": 0.02,
+          "residual_risk": 0.29706,
+          "risk_reduction": 0.21006,
+          "cost": 0.2,
+          "time_total": 0.18,
+          "time_to_effect": 0.08,
+          "disruption": 0.188,
           "n_actions": 3
         },
         "selected": [
-          "increase_monitoring:APP-01",
+          "revoke_credentials:DB-01",
           "increase_monitoring:DB-01",
-          "block_ip:ATTACKER"
+          "increase_monitoring:WEB-01"
         ],
         "info": {
           "backend": "statevector",
@@ -1658,100 +1661,100 @@
           },
           "transpiled": null,
           "params": [
-            6.6955877584537955,
-            -0.647990567012604
+            8.252836400486427,
+            -0.6461723314170347
           ],
           "function_evals": 80,
           "convergence": [
-            0.24592393732203702,
-            0.25525751300801863,
-            0.25660045977714785,
-            0.23092871506900295,
-            0.22726213850142468,
-            0.23125607571718781,
-            0.22432195160080542,
-            0.22309182025428623,
-            0.2293579528508405,
-            0.21580252437967562,
-            0.19614186433616979,
-            0.137357679452904,
-            0.44898346805390504,
-            0.32134759810953195,
-            0.16509050919977242,
-            0.1353324193746031,
-            0.1653266606781279,
-            0.12576936494871,
-            0.13819696347188487,
-            0.13366896297419378,
-            0.12629625851034654,
-            0.12306979148104764,
-            0.1219551606617094,
-            0.12498965803133787,
-            0.12180397095021273,
-            0.12072497434560903,
-            0.1188166959322575,
-            0.11517594855217483,
-            0.11232788046604394,
-            0.10535221425509987,
-            0.10863896671807655,
-            0.10317616138586017,
-            0.1090980425525625,
-            0.10235579988271586,
-            0.101157567241748,
-            0.09968877129804585,
-            0.09777949298202038,
-            0.10434082775256823,
-            0.09578313193524533,
-            0.09445459832479663,
-            0.0929471886850202,
-            0.09026264735962913,
-            0.09664607797848968,
-            0.08978428907849419,
-            0.08793978090049435,
-            0.08458586968998202,
-            0.07956609542403228,
-            0.07269020491886762,
-            0.06743989891444177,
-            0.05517259522813427,
-            0.097594077664136,
-            0.1508141712910403,
-            0.05281921332321517,
-            0.06495681676318976,
-            0.05477890387556285,
-            0.05310605715003527,
-            0.05300592064627271,
-            0.052693790111665625,
-            0.05336582887296375,
-            0.052171844657591504,
-            0.051841584497495624,
-            0.051409718834208015,
-            0.05056881980616966,
-            0.04896154878095797,
-            0.0462731407685039,
-            0.08783599259494113,
-            0.0623857900681444,
-            0.04746673932587325,
-            0.046099379353714776,
-            0.04802394174129199,
-            0.045518871536335326,
-            0.045271741977038774,
-            0.04490472053368885,
-            0.04456829611194134,
-            0.04393207626302849,
-            0.04257998846621698,
-            0.04006278012405129,
-            0.04973079248697691,
-            0.059239836549350805,
-            0.04346380683466238
+            0.25260604249604596,
+            0.26183423131231975,
+            0.26328164239306573,
+            0.23773757918384558,
+            0.23406288358049335,
+            0.23826148522632323,
+            0.23076083146115034,
+            0.2282488960521382,
+            0.23331078453261322,
+            0.22872324309745956,
+            0.21873347186732023,
+            0.20156730425862163,
+            0.2981332984131255,
+            0.18134746143360317,
+            0.16948238952713712,
+            0.1507832423620335,
+            0.2752694655124537,
+            0.16650361312708378,
+            0.16622757470556276,
+            0.15649969534113817,
+            0.14869945406568177,
+            0.14452639033247533,
+            0.13894370449155757,
+            0.13465298067946357,
+            0.14044554846358348,
+            0.13325039190745197,
+            0.13188228718419445,
+            0.12940630318970792,
+            0.12478114364515586,
+            0.11831794504937353,
+            0.11424119083283892,
+            0.10690459336295227,
+            0.0914229438144008,
+            0.06212821461009379,
+            0.04472375498199474,
+            0.4758911307998728,
+            0.6557729640956722,
+            0.0645266785786272,
+            0.045630388125855174,
+            0.13417397682950388,
+            0.03656333161313993,
+            0.03287449669313447,
+            0.03651622448606186,
+            0.0334068392043155,
+            0.03260558010671607,
+            0.03242005503135087,
+            0.032777936835409374,
+            0.03221219448247595,
+            0.03226932996906916,
+            0.032117827256355896,
+            0.032137094356667964,
+            0.03214657056543903,
+            0.032069816503496495,
+            0.0320079379729067,
+            0.03207042662391754,
+            0.03194251548541367,
+            0.03188426887298327,
+            0.03177430119411427,
+            0.03154859277142372,
+            0.03110977709721147,
+            0.03034415297175959,
+            0.03963776027843006,
+            0.03465503289428248,
+            0.030599328720927306,
+            0.030289593477547463,
+            0.030706892448827877,
+            0.030134094317426304,
+            0.030056016541728015,
+            0.029951909940919647,
+            0.029855159960585836,
+            0.029657114391088726,
+            0.029280584314351318,
+            0.02974163296956013,
+            0.029795636712601888,
+            0.02950816067534459,
+            0.02922478739341166,
+            0.029208289515316874,
+            0.029100655262384225,
+            0.02890301510972338,
+            0.028532267077418787
           ],
-          "qubo_build_s": 0.010079590000259486,
-          "optimise_s": 0.11463040800026647,
-          "expected_energy": 1.5507811642190727,
-          "unique_samples": 194,
+          "qubo_build_s": 0.009866846000022633,
+          "optimise_s": 0.12156994199995097,
+          "expected_energy": 1.450214339583557,
+          "unique_samples": 167,
           "qubo_meta": {
             "surrogate": "regression",
             "encoding": "unbalanced",
-            "penalty": 0.8935431344264683,
+            "penalty": 0.7558016031384165,
             "n_constraints": 2,
             "n_slack": 0,
             "weights": {
@@ -1761,40 +1764,40 @@
               "delta": 0.2
             },
             "fidelity": {
-              "r2": 0.9868969462964551,
-              "spearman": 0.9928916634366897,
-              "mae": 0.0060636584877411335
+              "r2": 0.9901471881858449,
+              "spearman": 0.9922798326797292,
+              "mae": 0.004611572266800453
             }
           },
-          "approximation_ratio": 0.9599372198759487,
-          "p_optimal_state": 0.0051983938996352,
-          "optimal_state_amplification": 21.292621412905778,
-          "qubo_optimum": 0.4211796890827611,
+          "approximation_ratio": 0.9714677329225813,
+          "p_optimal_state": 0.009411549853047449,
+          "optimal_state_amplification": 38.54970819808235,
+          "qubo_optimum": 0.5574458367570283,
           "raw_feasible": true
         }
       },
       "explanations": [
         {
-          "action_id": "increase_monitoring:APP-01",
-          "description": "Increase monitoring on APP-01",
+          "action_id": "revoke_credentials:DB-01",
+          "description": "Revoke credentials on DB-01",
           "selected": true,
           "reasons": [
-            "EXPLOIT activity on APP-01 (p=91%)",
-            "Asset criticality 0.75; downstream exposure HIGH",
-            "Expected risk reduction alone: 5.8%",
-            "Removing it would worsen the plan objective by +0.0480",
-            "Cost LOW, response time LOW, business disruption LOW"
+            "INFILTRATION activity on DB-01 (p=88%)",
+            "Asset criticality 0.90; downstream exposure LOW",
+            "Expected risk reduction alone: 11.5%",
+            "Removing it would worsen the plan objective by +0.0276",
+            "Cost MEDIUM, response time LOW, business disruption MEDIUM"
           ],
           "factors": {
-            "standalone_risk_reduction": 0.0585,
-            "cost": 0.05,
-            "time": 0.05,
-            "disruption": 0.0,
-            "target_criticality": 0.75,
-            "downstream_exposure": 0.511,
-            "attack_type": "EXPLOIT",
-            "attack_probability": 0.91,
-            "portfolio_contribution": 0.048
+            "standalone_risk_reduction": 0.1153,
+            "cost": 0.1,
+            "time": 0.08,
+            "disruption": 0.188,
+            "target_criticality": 0.9,
+            "downstream_exposure": 0.11,
+            "attack_type": "INFILTRATION",
+            "attack_probability": 0.88,
+            "portfolio_contribution": 0.0276
           }
         },
         {
@@ -1804,12 +1807,12 @@
           "reasons": [
             "INFILTRATION activity on DB-01 (p=88%)",
             "Asset criticality 0.90; downstream exposure LOW",
-            "Expected risk reduction alone: 8.1%",
-            "Removing it would worsen the plan objective by +0.0726",
+            "Expected risk reduction alone: 7.8%",
+            "Removing it would worsen the plan objective by +0.0383",
             "Cost LOW, response time LOW, business disruption LOW"
           ],
           "factors": {
-            "standalone_risk_reduction": 0.0809,
+            "standalone_risk_reduction": 0.0779,
             "cost": 0.05,
             "time": 0.05,
             "disruption": 0.0,
@@ -1817,61 +1820,30 @@
             "downstream_exposure": 0.11,
             "attack_type": "INFILTRATION",
             "attack_probability": 0.88,
-            "portfolio_contribution": 0.0726
+            "portfolio_contribution": 0.0383
           }
         },
         {
-          "action_id": "block_ip:ATTACKER",
-          "description": "Block malicious IP 203.0.113.7",
+          "action_id": "increase_monitoring:WEB-01",
+          "description": "Increase monitoring on WEB-01",
           "selected": true,
           "reasons": [
-            "Expected risk reduction alone: 13.1%",
-            "Removing it would worsen the plan objective by +0.1215",
+            "WEB_ATTACK activity on WEB-01 (p=94%)",
+            "Asset criticality 0.60; downstream exposure HIGH",
+            "Expected risk reduction alone: 4.4%",
+            "Removing it would worsen the plan objective by +0.0315",
             "Cost LOW, response time LOW, business disruption LOW"
           ],
           "factors": {
-            "standalone_risk_reduction": 0.1313,
+            "standalone_risk_reduction": 0.044,
             "cost": 0.05,
-            "time": 0.02,
-            "disruption": 0.02,
-            "portfolio_contribution": 0.1215
-          }
-        },
-        {
-          "action_id": "segment_network:data->mgmt",
-          "description": "Segment data -> mgmt boundary",
-          "selected": false,
-          "reasons": [
-            "Infeasible: would violate budget limit; would violate cardinality limit",
-            "Largely redundant with increase_monitoring:APP-01, increase_monitoring:DB-01, block_ip:ATTACKER",
-            "Adding it would worsen the objective by +0.0396 (extra risk reduction does not justify cost/time/disruption)",
-            "Long time-to-effect; faster actions give more immediate protection"
-          ],
-          "factors": {
-            "standalone_risk_reduction": 0.1748,
-            "cost": 0.35,
-            "time": 0.4,
-            "disruption": 0.35,
-            "objective_if_added": 0.0396
-          }
-        },
-        {
-          "action_id": "isolate_host:ADMIN",
-          "description": "Isolate ADMIN",
-          "selected": false,
-          "reasons": [
-            "Infeasible: would violate cardinality limit",
-            "Largely redundant with increase_monitoring:APP-01, increase_monitoring:DB-01, block_ip:ATTACKER",
-            "Adding it would worsen the objective by +0.0199 (extra risk reduction does not justify cost/time/disruption)"
-          ],
-          "factors": {
-            "standalone_risk_reduction": 0.1685,
-            "cost": 0.15,
-            "time": 0.1,
-            "disruption": 0.55,
-            "target_criticality": 1.0,
-            "downstream_exposure": 0.0,
-            "objective_if_added": 0.0199
+            "time": 0.05,
+            "disruption": 0.0,
+            "target_criticality": 0.6,
+            "downstream_exposure": 0.593,
+            "attack_type": "WEB_ATTACK",
+            "attack_probability": 0.94,
+            "portfolio_contribution": 0.0315
           }
         },
         {
@@ -1880,16 +1852,35 @@
           "selected": false,
           "reasons": [
             "Infeasible: would violate budget limit; would violate cardinality limit",
-            "Largely redundant with increase_monitoring:APP-01, increase_monitoring:DB-01, block_ip:ATTACKER",
-            "Adding it would worsen the objective by +0.1148 (extra risk reduction does not justify cost/time/disruption)",
+            "Largely redundant with revoke_credentials:DB-01, increase_monitoring:DB-01, increase_monitoring:WEB-01",
+            "Adding it would worsen the objective by +0.0043 (extra risk reduction does not justify cost/time/disruption)",
             "Long time-to-effect; faster actions give more immediate protection"
           ],
           "factors": {
-            "standalone_risk_reduction": 0.1379,
+            "standalone_risk_reduction": 0.1581,
             "cost": 0.35,
             "time": 0.4,
             "disruption": 0.35,
-            "objective_if_added": 0.1148
+            "objective_if_added": 0.0043
+          }
+        },
+        {
+          "action_id": "isolate_host:ADMIN",
+          "description": "Isolate ADMIN",
+          "selected": false,
+          "reasons": [
+            "Infeasible: would violate cardinality limit",
+            "Largely redundant with revoke_credentials:DB-01, increase_monitoring:DB-01, increase_monitoring:WEB-01",
+            "Adding it would worsen the objective by +0.1229 (extra risk reduction does not justify cost/time/disruption)"
+          ],
+          "factors": {
+            "standalone_risk_reduction": 0.1318,
+            "cost": 0.15,
+            "time": 0.1,
+            "disruption": 0.55,
+            "target_criticality": 1.0,
+            "downstream_exposure": 0.0,
+            "objective_if_added": 0.1229
           }
         },
         {
@@ -1898,11 +1889,11 @@
           "selected": false,
           "reasons": [
             "Infeasible: would violate cardinality limit",
-            "Largely redundant with increase_monitoring:APP-01, increase_monitoring:DB-01, block_ip:ATTACKER",
-            "Adding it would worsen the objective by +0.0345 (extra risk reduction does not justify cost/time/disruption)"
+            "Largely redundant with revoke_credentials:DB-01, increase_monitoring:DB-01, increase_monitoring:WEB-01",
+            "Adding it would worsen the objective by +0.1209 (extra risk reduction does not justify cost/time/disruption)"
           ],
           "factors": {
-            "standalone_risk_reduction": 0.1183,
+            "standalone_risk_reduction": 0.1256,
             "cost": 0.15,
             "time": 0.1,
             "disruption": 0.517,
@@ -1910,7 +1901,25 @@
             "downstream_exposure": 0.11,
             "attack_type": "INFILTRATION",
             "attack_probability": 0.88,
-            "objective_if_added": 0.0345
+            "objective_if_added": 0.1209
+          }
+        },
+        {
+          "action_id": "segment_network:data->mgmt",
+          "description": "Segment data -> mgmt boundary",
+          "selected": false,
+          "reasons": [
+            "Infeasible: would violate budget limit; would violate cardinality limit",
+            "Largely redundant with revoke_credentials:DB-01, increase_monitoring:DB-01, increase_monitoring:WEB-01",
+            "Adding it would worsen the objective by +0.1405 (extra risk reduction does not justify cost/time/disruption)",
+            "Long time-to-effect; faster actions give more immediate protection"
+          ],
+          "factors": {
+            "standalone_risk_reduction": 0.122,
+            "cost": 0.35,
+            "time": 0.4,
+            "disruption": 0.35,
+            "objective_if_added": 0.1405
           }
         }
       ],
@@ -1920,7 +1929,7 @@
         "n_slack": 0,
         "surrogate": "regression",
         "encoding": "unbalanced",
-        "penalty": 0.8935431344264683,
+        "penalty": 0.7558016031384165,
         "n_constraints": 2,
         "weights": {
           "alpha": 1.0,
@@ -1929,94 +1938,80 @@
           "delta": 0.2
         },
         "fidelity": {
-          "r2": 0.9868969462964551,
-          "spearman": 0.9928916634366897,
-          "mae": 0.0060636584877411335
+          "r2": 0.9901471881858449,
+          "spearman": 0.9922798326797292,
+          "mae": 0.004611572266800453
         },
         "matrix": [
           [
-            -0.43351,
-            0.37362,
-            0.29221,
-            0.52452,
-            0.45362,
-            0.30935,
-            0.47579,
-            0.28892,
-            0.3034,
-            0.79524,
-            0.8896,
-            0.79557
+            -0.33195,
+            0.24807,
+            0.39298,
+            0.45577,
+            0.39756,
+            0.26529,
+            0.45857,
+            0.24505,
+            0.67838,
+            0.66604,
+            0.7556,
+            0.65734
           ],
           [
             0.0,
-            -0.36374,
-            0.26402,
-            0.3625,
-            0.30831,
-            0.2499,
-            0.37778,
-            0.25571,
-            0.25456,
-            0.59066,
-            0.6049,
-            0.58843
-          ],
-          [
-            0.0,
-            0.0,
-            -0.34199,
-            0.28866,
-            0.25182,
-            0.22319,
-            0.29167,
-            0.21961,
-            0.22619,
-            0.39247,
-            0.39712,
-            0.39664
+            -0.25668,
+            0.23925,
+            0.24731,
+            0.2263,
+            0.19425,
+            0.26369,
+            0.195,
+            0.33419,
+            0.33474,
+            0.34305,
+            0.33557
           ],
           [
             0.0,
             0.0,
-            0.0,
-            -0.3929,
-            0.46306,
-            0.30393,
-            0.43957,
-            0.28485,
-            0.2834,
-            0.78267,
-            0.8785,
-            0.78029
+            -0.26475,
+            0.3866,
+            0.31087,
+            0.2371,
+            0.46886,
+            0.23706,
+            0.69924,
+            0.66175,
+            0.66937,
+            0.66521
           ],
           [
             0.0,
             0.0,
             0.0,
-            0.0,
-            -0.41411,
-            0.27216,
-            0.35467,
-            0.26155,
-            0.24914,
-            0.58683,
-            0.68545,
-            0.57933
+            -0.33326,
+            0.40363,
+            0.2624,
+            0.45095,
+            0.24259,
+            0.6732,
+            0.66801,
+            0.7517,
+            0.665
           ],
           [
             0.0,
             0.0,
             0.0,
             0.0,
-            0.0,
-            -0.36515,
-            0.28556,
-            0.22387,
-            0.22519,
-            0.39297,
-            0.41685,
-            0.39677
+            -0.36112,
+            0.23359,
+            0.35548,
+            0.21863,
+            0.49854,
+            0.49922,
+            0.5902,
+            0.49543
           ],
           [
             0.0,
@@ -2024,13 +2019,13 @@
             0.0,
             0.0,
             0.0,
-            0.0,
-            -0.36593,
-            0.2827,
-            0.3291,
-            0.8186,
-            0.81803,
-            0.83871
+            -0.31502,
+            0.26208,
+            0.19112,
+            0.33012,
+            0.33339,
+            0.35352,
+            0.33548
           ],
           [
             0.0,
@@ -2039,12 +2034,12 @@
             0.0,
             0.0,
             0.0,
-            0.0,
-            -0.33467,
-            0.22781,
-            0.39767,
-            0.3989,
-            0.39189
+            -0.30749,
+            0.26373,
+            0.84281,
+            0.83073,
+            0.83384,
+            0.82792
           ],
           [
             0.0,
@@ -2054,11 +2049,11 @@
             0.0,
             0.0,
             0.0,
-            0.0,
-            -0.41385,
-            0.44304,
-            0.40662,
-            0.47882
+            -0.28542,
+            0.33315,
+            0.33705,
+            0.33891,
+            0.33156
           ],
           [
             0.0,
@@ -2069,10 +2064,10 @@
             0.0,
             0.0,
             0.0,
-            0.0,
-            -0.21785,
-            1.59488,
-            1.62926
+            -0.1277,
+            1.3253,
+            1.33213,
+            1.32651
           ],
           [
             0.0,
@@ -2084,9 +2079,9 @@
             0.0,
             0.0,
             0.0,
-            0.0,
-            -0.30581,
-            1.58948
+            -0.18519,
+            1.3323,
+            1.40041
           ],
           [
             0.0,
@@ -2099,20 +2094,34 @@
             0.0,
             0.0,
             0.0,
+            -0.20845,
+            1.33006
+          ],
+          [
             0.0,
-            -0.27161
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            -0.24654
           ]
         ],
         "var_names": [
           "isolate_host:ADMIN",
-          "revoke_credentials:APP-01",
-          "increase_monitoring:APP-01",
+          "increase_monitoring:ADMIN",
+          "isolate_host:APP-01",
           "isolate_host:DB-01",
           "revoke_credentials:DB-01",
           "increase_monitoring:DB-01",
-          "isolate_host:DC-01",
+          "protect_database:FIN-DB",
           "increase_monitoring:WEB-01",
-          "block_ip:ATTACKER",
+          "segment_network:app->data",
           "segment_network:corp->data",
           "segment_network:data->mgmt",
           "segment_network:dmz->corp"
@@ -2156,14 +2165,6 @@
         {
           "nodes": [
             "APP-01",
-            "HR-DB",
-            "DC-01"
-          ],
-          "probability": 0.04941
-        },
-        {
-          "nodes": [
-            "APP-01",
             "DB-01",
             "ADMIN"
           ],
@@ -2176,6 +2177,15 @@
             "ADMIN"
           ],
           "probability": 0.04779
+        },
+        {
+          "nodes": [
+            "ATTACKER",
+            "VPN-01",
+            "PC-23",
+            "DC-01"
+          ],
+          "probability": 0.00755
         }
       ]
     }
@@ -2340,7 +2350,7 @@
       "env": "demo (14 nodes)",
       "seed": 4,
       "policy": "none",
-      "final_loss": 0.8351648351648353,
+      "final_loss": 0.8351648351648352,
       "cumulative_loss": 3.2912087912087915,
       "critical_compromised": 4,
       "compromised": [
@@ -2417,8 +2427,8 @@
       "env": "demo (14 nodes)",
       "seed": 6,
       "policy": "none",
-      "final_loss": 0.8351648351648353,
-      "cumulative_loss": 5.043956043956046,
+      "final_loss": 0.8351648351648352,
+      "cumulative_loss": 5.043956043956044,
       "critical_compromised": 4,
       "compromised": [
         "ADMIN",
@@ -2533,8 +2543,8 @@
       "env": "demo (14 nodes)",
       "seed": 9,
       "policy": "none",
-      "final_loss": 0.6373626373626374,
-      "cumulative_loss": 3.0769230769230775,
+      "final_loss": 0.6373626373626373,
+      "cumulative_loss": 3.0769230769230766,
       "critical_compromised": 2,
       "compromised": [
         "ADMIN",
@@ -2569,7 +2579,7 @@
       "env": "demo (14 nodes)",
       "seed": 10,
       "policy": "none",
-      "final_loss": 0.8241758241758244,
+      "final_loss": 0.8241758241758242,
       "cumulative_loss": 4.2747252747252755,
       "critical_compromised": 4,
       "compromised": [
@@ -2841,8 +2851,8 @@
       "env": "demo (14 nodes)",
       "seed": 17,
       "policy": "none",
-      "final_loss": 0.8241758241758244,
-      "cumulative_loss": 4.571428571428573,
+      "final_loss": 0.8241758241758242,
+      "cumulative_loss": 4.571428571428571,
       "critical_compromised": 4,
       "compromised": [
         "APP-01",
@@ -2992,7 +3002,7 @@
       "seed": 1,
       "policy": "static",
       "final_loss": 0.9065934065934066,
-      "cumulative_loss": 5.214285714285715,
+      "cumulative_loss": 5.214285714285714,
       "critical_compromised": 5,
       "compromised": [
         "ADMIN",
@@ -3063,8 +3073,8 @@
       "env": "demo (14 nodes)",
       "seed": 3,
       "policy": "static",
-      "final_loss": 0.5549450549450551,
-      "cumulative_loss": 3.104395604395605,
+      "final_loss": 0.5549450549450549,
+      "cumulative_loss": 3.104395604395604,
       "critical_compromised": 2,
       "compromised": [
         "ADMIN",
@@ -3135,7 +3145,7 @@
       "env": "demo (14 nodes)",
       "seed": 5,
       "policy": "static",
-      "final_loss": 0.7252747252747254,
+      "final_loss": 0.7252747252747253,
       "cumulative_loss": 3.472527472527473,
       "critical_compromised": 3,
       "compromised": [
@@ -3275,8 +3285,8 @@
       "env": "demo (14 nodes)",
       "seed": 9,
       "policy": "static",
-      "final_loss": 0.6373626373626374,
-      "cumulative_loss": 3.0769230769230775,
+      "final_loss": 0.6373626373626373,
+      "cumulative_loss": 3.0769230769230766,
       "critical_compromised": 2,
       "compromised": [
         "ADMIN",
@@ -3311,7 +3321,7 @@
       "env": "demo (14 nodes)",
       "seed": 10,
       "policy": "static",
-      "final_loss": 0.8241758241758244,
+      "final_loss": 0.8241758241758242,
       "cumulative_loss": 4.2747252747252755,
       "critical_compromised": 4,
       "compromised": [
@@ -3349,8 +3359,8 @@
       "env": "demo (14 nodes)",
       "seed": 11,
       "policy": "static",
-      "final_loss": 0.5549450549450551,
-      "cumulative_loss": 3.0219780219780223,
+      "final_loss": 0.5549450549450549,
+      "cumulative_loss": 3.0219780219780215,
       "critical_compromised": 2,
       "compromised": [
         "ADMIN",
@@ -3385,7 +3395,7 @@
       "seed": 12,
       "policy": "static",
       "final_loss": 0.44505494505494503,
-      "cumulative_loss": 1.934065934065934,
+      "cumulative_loss": 1.9340659340659343,
       "critical_compromised": 1,
       "compromised": [
         "DC-01",
@@ -3453,7 +3463,7 @@
       "env": "demo (14 nodes)",
       "seed": 14,
       "policy": "static",
-      "final_loss": 0.8241758241758244,
+      "final_loss": 0.8241758241758242,
       "cumulative_loss": 3.1483516483516487,
       "critical_compromised": 4,
       "compromised": [
@@ -3491,7 +3501,7 @@
       "env": "demo (14 nodes)",
       "seed": 15,
       "policy": "static",
-      "final_loss": 0.7362637362637363,
+      "final_loss": 0.7362637362637362,
       "cumulative_loss": 4.038461538461538,
       "critical_compromised": 3,
       "compromised": [
@@ -3528,8 +3538,8 @@
       "env": "demo (14 nodes)",
       "seed": 16,
       "policy": "static",
-      "final_loss": 0.5549450549450551,
-      "cumulative_loss": 3.774725274725276,
+      "final_loss": 0.5549450549450549,
+      "cumulative_loss": 3.7747252747252737,
       "critical_compromised": 2,
       "compromised": [
         "ADMIN",
@@ -3597,8 +3607,8 @@
       "env": "demo (14 nodes)",
       "seed": 18,
       "policy": "static",
-      "final_loss": 0.5274725274725276,
-      "cumulative_loss": 3.241758241758242,
+      "final_loss": 0.5274725274725274,
+      "cumulative_loss": 3.2417582417582413,
       "critical_compromised": 2,
       "compromised": [
         "ADMIN",
@@ -3632,7 +3642,7 @@
       "seed": 19,
       "policy": "static",
       "final_loss": 0.4175824175824176,
-      "cumulative_loss": 2.1373626373626373,
+      "cumulative_loss": 2.1373626373626378,
       "critical_compromised": 1,
       "compromised": [
         "DC-01",
@@ -3902,8 +3912,8 @@
       "env": "demo (14 nodes)",
       "seed": 8,
       "policy": "reoptimize",
-      "final_loss": 0.18681318681318682,
-      "cumulative_loss": 1.4945054945054945,
+      "final_loss": 0.18681318681318684,
+      "cumulative_loss": 1.4945054945054947,
       "critical_compromised": 0,
       "compromised": [
         "MAIL-01",
@@ -4233,8 +4243,8 @@
       "env": "demo (14 nodes)",
       "seed": 19,
       "policy": "reoptimize",
-      "final_loss": 0.18681318681318682,
-      "cumulative_loss": 1.4945054945054945,
+      "final_loss": 0.18681318681318684,
+      "cumulative_loss": 1.4945054945054947,
       "critical_compromised": 0,
       "compromised": [
         "MAIL-01",
@@ -4502,8 +4512,8 @@
       "env": "demo (14 nodes)",
       "seed": 8,
       "policy": "aqdo",
-      "final_loss": 0.18681318681318682,
-      "cumulative_loss": 1.4945054945054945,
+      "final_loss": 0.18681318681318684,
+      "cumulative_loss": 1.4945054945054947,
       "critical_compromised": 0,
       "compromised": [
         "MAIL-01",
@@ -4620,8 +4630,8 @@
       "env": "demo (14 nodes)",
       "seed": 12,
       "policy": "aqdo",
-      "final_loss": 0.18681318681318682,
-      "cumulative_loss": 1.4945054945054945,
+      "final_loss": 0.18681318681318684,
+      "cumulative_loss": 1.4945054945054947,
       "critical_compromised": 0,
       "compromised": [
         "MAIL-01",
@@ -4862,7 +4872,7 @@
       "env": "enterprise-40",
       "seed": 0,
       "policy": "none",
-      "final_loss": 0.26602845282104726,
+      "final_loss": 0.2660284528210472,
       "cumulative_loss": 1.3190628294725004,
       "critical_compromised": 2,
       "compromised": [
@@ -5347,7 +5357,7 @@
       "env": "enterprise-40",
       "seed": 15,
       "policy": "none",
-      "final_loss": 0.32093405711348777,
+      "final_loss": 0.3209340571134878,
       "cumulative_loss": 1.5989115528798528,
       "critical_compromised": 4,
       "compromised": [
@@ -5381,7 +5391,7 @@
       "seed": 16,
       "policy": "none",
       "final_loss": 0.22948995655165874,
-      "cumulative_loss": 1.108115392683253,
+      "cumulative_loss": 1.1081153926832528,
       "critical_compromised": 3,
       "compromised": [
         "ADMIN-01",
@@ -5503,8 +5513,8 @@
       "env": "enterprise-40",
       "seed": 0,
       "policy": "static",
-      "final_loss": 0.2602500046077409,
-      "cumulative_loss": 0.9865721226552122,
+      "final_loss": 0.26025000460774095,
+      "cumulative_loss": 0.9865721226552123,
       "critical_compromised": 3,
       "compromised": [
         "ADMIN-01",
@@ -5835,7 +5845,7 @@
       "env": "enterprise-40",
       "seed": 11,
       "policy": "static",
-      "final_loss": 0.3288565349076054,
+      "final_loss": 0.32885653490760547,
       "cumulative_loss": 1.4453435166901336,
       "critical_compromised": 3,
       "compromised": [
@@ -5982,7 +5992,7 @@
       "seed": 16,
       "policy": "static",
       "final_loss": 0.22948995655165874,
-      "cumulative_loss": 1.108115392683253,
+      "cumulative_loss": 1.1081153926832528,
       "critical_compromised": 3,
       "compromised": [
         "ADMIN-01",
@@ -6101,7 +6111,7 @@
       "env": "enterprise-40",
       "seed": 0,
       "policy": "reoptimize",
-      "final_loss": 0.20364031198788116,
+      "final_loss": 0.20364031198788118,
       "cumulative_loss": 0.8733527374154928,
       "critical_compromised": 2,
       "compromised": [
@@ -6630,7 +6640,7 @@
       "env": "enterprise-40",
       "seed": 0,
       "policy": "aqdo",
-      "final_loss": 0.20364031198788116,
+      "final_loss": 0.20364031198788118,
       "cumulative_loss": 0.8733527374154928,
       "critical_compromised": 2,
       "compromised": [

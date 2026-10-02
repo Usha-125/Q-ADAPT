@@ -84,8 +84,10 @@ def to_jsonable(x):
         return {str(k): to_jsonable(v) for k, v in x.items()}
     if isinstance(x, (list, tuple)):
         return [to_jsonable(v) for v in x]
+    if isinstance(x, np.ndarray):
+        return to_jsonable(x.tolist())
     if isinstance(x, np.generic):
-        return x.item()
+        x = x.item()
     if isinstance(x, float) and not np.isfinite(x):
-        return None
+        return None  # NaN / inf are not valid JSON
     return x

@@ -180,7 +180,8 @@ export const api = {
   risk: (model = "propagation") => req<RiskReport>(`/risk?model=${model}`),
   optimize: (p: OptimizeParams) => post<DecisionReport>("/optimize", p),
   compare: (p: OptimizeParams, solvers: string[]) =>
-    post<{ n_actions: number; base_risk: number; results: SolveResult[] }>("/compare", { ...p, solvers }),
+    post<{ n_actions: number; base_risk: number; results: SolveResult[]; errors: Record<string, string> }>(
+      "/compare", { ...p, solvers }),
   decide: (runId: number, decision: "approve" | "reject", action_ids?: string[]) =>
     post<Overview>(`/runs/${runId}/decision`, { decision, action_ids }),
   nextStage: () => post<Overview>("/adaptive/next-stage", {}),

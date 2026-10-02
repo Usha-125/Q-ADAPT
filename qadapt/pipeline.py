@@ -92,7 +92,9 @@ class QAdaptPipeline:
             actions = gen.generate(focus=sorted(self.ag.threat), include_segmentation=False)
         else:
             actions = gen.generate()
-        actions = [a for a in actions if a.id not in (exclude or set())]
+        # never re-recommend a defense that is already in force
+        exclude = set(exclude or ()) | {a.id for a in self.ag.applied_defenses}
+        actions = [a for a in actions if a.id not in exclude]
         cg = self.ag.compile()
         ev = DefenseEvaluator(self.ag, actions, self.risk_model, cg)
         if len(actions) > self.max_qubits:
