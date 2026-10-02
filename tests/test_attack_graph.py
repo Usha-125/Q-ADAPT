@@ -31,7 +31,8 @@ def test_propagation_matches_closed_form_on_chain():
     from qadapt.attack_graph.topology import Topology
     from qadapt.core.models import Asset, AssetType
     assets = {k: Asset(k, k, AssetType.APP_SERVER, 1.0) for k in "ABC"}
-    ag = AttackGraph(Topology("chain", assets, [("A", "B", "x"), ("B", "C", "x")], ["A"]))
+    ag = AttackGraph(Topology("chain", assets, [("A", "B", "x"), ("B", "C", "x")], ["A"]),
+                     attacker_activity=1.0)
     for u, v in ag.g.edges:
         ag.g[u][v]["p"] = 0.5
     P = propagate(ag.compile())

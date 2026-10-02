@@ -5,7 +5,7 @@ incoming attack step)::
 
     P(v) = 1 - (1 - t_v * m_v) * prod_{(u,v) in E} (1 - P(u) * p_uv * m_uv)
 
-with P(ATTACKER) = 1, ML evidence t_v, and defense multipliers m in [0, 1].
+with P(ATTACKER) = attacker activity prior, ML evidence t_v, and defense multipliers m in [0, 1].
 The fixed point is reached by monotone iteration from P = 0, which also handles
 cycles (lateral movement). All operations are batched so that many candidate
 defense portfolios can be scored in one call.
@@ -38,14 +38,15 @@ def propagate(cg: CompiledGraph, edge_mult: np.ndarray | None = None,
 
     p_eff = cg.p[None, :] * em  # (B, E)
     log_local = np.log1p(-np.clip(cg.threat[None, :] * nm, 0.0, 1.0 - _EPS))  # (B, N)
+    activity = cg.threat[0]
     P = np.zeros((batch, cg.n_nodes))
-    P[:, 0] = 1.0
+    P[:, 0] = activity
     max_iter = max_iter or (cg.n_nodes + 5)
     for _ in range(max_iter):
         step = np.clip(P[:, cg.src] * p_eff, 0.0, 1.0 - _EPS)
         log_in = np.asarray((np.log1p(-step)) @ cg.incidence)  # (B, N)
         P_new = 1.0 - np.exp(log_local + log_in)
-        P_new[:, 0] = 1.0
+        P_new[:, 0] = activity
         if np.max(np.abs(P_new - P)) < tol:
             P = P_new
             break
@@ -59,7 +60,8 @@ def asset_risk(cg: CompiledGraph, P: np.ndarray) -> np.ndarray:
 
 
 def total_risk(cg: CompiledGraph, P: np.ndarray) -> np.ndarray | float:
-    """Criticality-weighted network risk normalised to [0, 1]."""
-    denom = cg.criticality.sum()
-    r = (P * cg.criticality).sum(axis=-1) / denom
+    """Criticality-weighted network risk normalised to [0, 1] (attacker node excluded)."""
+    crit = cg.criticality.copy()
+    crit[0] = 0.0
+    r = (P * crit).sum(axis=-1) / crit.sum()
     return float(r) if np.ndim(r) == 0 else r

@@ -20,6 +20,7 @@ from qadapt.core.models import Asset, ThreatAssessment
 ATTACKER = "ATTACKER"
 P_MIN, P_MAX = 0.02, 0.98
 MISCONFIG_FLOOR = 0.05  # residual exploit probability of an asset without known CVEs
+DEFAULT_ATTACKER_ACTIVITY = 0.3  # prior probability that an external attacker is active
 
 
 def edge_probability(kind: str, src: Asset | None, dst: Asset) -> float:
@@ -41,8 +42,10 @@ def edge_probability(kind: str, src: Asset | None, dst: Asset) -> float:
 class AttackGraph:
     """Mutable attack-graph state (topology, edge probabilities, ML threat evidence)."""
 
-    def __init__(self, topology: Topology):
+    def __init__(self, topology: Topology,
+                 attacker_activity: float = DEFAULT_ATTACKER_ACTIVITY):
         self.topology = topology
+        self.attacker_activity = attacker_activity
         self.assets = topology.assets
         self.g = nx.DiGraph()
         self.g.add_node(ATTACKER, criticality=0.0, type="attacker")
@@ -60,16 +63,22 @@ class AttackGraph:
 
     # ---- dynamic state -------------------------------------------------------
     def apply_threats(self, threats: list[ThreatAssessment]) -> None:
-        """Inject ML evidence: local compromise probability = p * confidence."""
+        """Inject ML evidence: local compromise probability = p * confidence.
+
+        Detected activity also raises the attacker-presence prior, since a
+        detection is evidence that an adversary is currently operating.
+        """
         for t in threats:
             if t.host_id in self.assets:
-                self.threat[t.host_id] = max(self.threat.get(t.host_id, 0.0),
-                                             float(t.probability * t.confidence))
+                score = float(t.probability * t.confidence)
+                self.threat[t.host_id] = max(self.threat.get(t.host_id, 0.0), score)
                 self.threat_info[t.host_id] = t
+                self.attacker_activity = max(self.attacker_activity, score)
 
     def mark_compromised(self, host: str) -> None:
         self.compromised.add(host)
         self.threat[host] = 1.0
+        self.attacker_activity = 1.0
 
     def harden_edges(self, factors: dict[tuple[str, str], float]) -> None:
         """Permanently reduce edge probabilities (an approved defense took effect)."""
@@ -98,7 +107,8 @@ class AttackGraph:
     def stats(self) -> dict:
         n, m = self.g.number_of_nodes(), self.g.number_of_edges()
         return {"nodes": n, "edges": m, "density": nx.density(self.g),
-                "entry_points": len(self.topology.entry_points)}
+                "entry_points": len(self.topology.entry_points),
+                "attacker_activity": self.attacker_activity}
 
 
 @dataclass
@@ -126,6 +136,7 @@ class CompiledGraph:
         p = np.array([ag.g[u][v]["p"] for u, v in edges], dtype=float)
         crit = np.array([ag.g.nodes[n]["criticality"] for n in nodes], dtype=float)
         threat = np.array([ag.threat.get(n, 0.0) for n in nodes], dtype=float)
+        threat[0] = ag.attacker_activity
         inc = sparse.csr_matrix((np.ones(len(edges)), (np.arange(len(edges)), dst)),
                                 shape=(len(edges), len(nodes)))
         return cls(nodes, index, edges, {e: i for i, e in enumerate(edges)},
