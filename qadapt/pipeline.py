@@ -72,19 +72,26 @@ class QAdaptPipeline:
     def __init__(self, ag: AttackGraph, config: OptimizationConfig | None = None,
                  risk_model: str = "propagation", max_qubits: int = 14,
                  effectiveness: dict[ActionType, float] | None = None,
-                 path_threshold: float = 0.05):
+                 path_threshold: float = 0.05, candidate_focus: str = "risk"):
         self.ag = ag
         self.config = config or OptimizationConfig()
         self.risk_model = RiskModel(risk_model)
         self.max_qubits = max_qubits
         self.effectiveness = effectiveness or {}
         self.path_threshold = path_threshold
+        if candidate_focus not in ("risk", "threatened"):
+            raise ValueError("candidate_focus must be 'risk' or 'threatened'")
+        self.candidate_focus = candidate_focus
 
     def ingest(self, threats: list[ThreatAssessment]) -> None:
         self.ag.apply_threats(threats)
 
     def build_problem(self, exclude: set[str] | None = None) -> DefenseProblem:
-        actions = ActionGenerator(self.ag, self.effectiveness).generate()
+        gen = ActionGenerator(self.ag, self.effectiveness)
+        if self.candidate_focus == "threatened":  # alert-driven: only hosts with ML evidence
+            actions = gen.generate(focus=sorted(self.ag.threat), include_segmentation=False)
+        else:
+            actions = gen.generate()
         actions = [a for a in actions if a.id not in (exclude or set())]
         cg = self.ag.compile()
         ev = DefenseEvaluator(self.ag, actions, self.risk_model, cg)

@@ -48,10 +48,12 @@ def test_learner_moves_towards_observations():
 
 
 def test_adaptive_weights_escalate_with_risk():
-    aw = AdaptiveWeights()
+    aw = AdaptiveWeights(risk_appetite=0.25)
+    assert aw.weights(0.2).alpha == aw.base.alpha  # below appetite: no escalation
     w0 = aw.weights(0.3)
     w1 = aw.weights(0.6)
     assert w1.alpha > w0.alpha and w1.delta == w0.delta
+    assert aw.weights(10.0).alpha == aw.base.alpha * aw.max_alpha_factor
 
 
 def test_environment_defenses_slow_attacker():

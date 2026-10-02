@@ -46,23 +46,23 @@ class EffectivenessLearner:
 class AdaptiveWeights:
     """Risk-adaptive re-weighting of the multi-objective QUBO.
 
-    alpha_t = alpha_0 * (1 + kappa * max(0, R_t - R_ref) / R_ref)
+    alpha_t = alpha_0 * min(1 + kappa * max(0, R_t - R*) / R*, max_alpha_factor)
 
-    When the threat escalates beyond the reference level the security term
-    gains weight relative to cost, delay and disruption, so the optimiser
-    accepts more disruptive containment; when risk falls back the operational
-    terms regain influence.
+    R* is the organisation's risk appetite. While the believed network risk
+    exceeds it, the security term gains weight relative to cost, delay and
+    disruption, so the optimiser accepts more disruptive containment; as risk
+    falls back towards R*, the operational terms regain influence.
     """
 
     base: ObjectiveWeights = field(default_factory=ObjectiveWeights)
-    kappa: float = 1.5
+    kappa: float = 1.0
     max_alpha_factor: float = 3.0
-    reference_risk: float | None = None
+    risk_appetite: float = 0.25
+
+    def factor(self, risk: float) -> float:
+        rel = max(0.0, risk - self.risk_appetite) / max(self.risk_appetite, 1e-6)
+        return min(1.0 + self.kappa * rel, self.max_alpha_factor)
 
     def weights(self, risk: float) -> ObjectiveWeights:
-        if self.reference_risk is None:
-            self.reference_risk = max(risk, 1e-6)
-        rel = max(0.0, risk - self.reference_risk) / self.reference_risk
-        factor = min(1.0 + self.kappa * rel, self.max_alpha_factor)
         b = self.base
-        return ObjectiveWeights(b.alpha * factor, b.beta, b.gamma, b.delta)
+        return ObjectiveWeights(b.alpha * self.factor(risk), b.beta, b.gamma, b.delta)

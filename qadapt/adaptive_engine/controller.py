@@ -52,7 +52,8 @@ class AQDOController:
     def __init__(self, topology: Topology, config: OptimizationConfig | None = None,
                  policy: str = "aqdo", solver: str = "qaoa", solver_kw: dict | None = None,
                  max_qubits: int = 12, reopt_threshold: float = 0.02,
-                 approve: Callable[[DecisionReport], list[DefenseAction]] | None = None):
+                 approve: Callable[[DecisionReport], list[DefenseAction]] | None = None,
+                 risk_model: str = "propagation", candidate_focus: str = "risk"):
         if policy not in POLICIES:
             raise ValueError(f"policy must be one of {POLICIES}")
         self.policy = policy
@@ -65,6 +66,8 @@ class AQDOController:
         self.max_qubits = max_qubits
         self.reopt_threshold = reopt_threshold
         self.approve = approve or (lambda report: report.selected_actions)
+        self.risk_model = risk_model
+        self.candidate_focus = candidate_focus
         self.applied: list[DefenseAction] = []
         self.history: list[StepRecord] = []
         self.reports: list[DecisionReport] = []
@@ -98,7 +101,8 @@ class AQDOController:
     def decide(self, new_detections: bool = True) -> tuple[DecisionReport | None, StepRecord]:
         eff = self.learner.estimates() if self.policy == "aqdo" else {}
         cfg = copy.deepcopy(self.config)
-        pipe = QAdaptPipeline(self.ag, cfg, max_qubits=self.max_qubits, effectiveness=eff)
+        pipe = QAdaptPipeline(self.ag, cfg, risk_model=self.risk_model, max_qubits=self.max_qubits,
+                              effectiveness=eff, candidate_focus=self.candidate_focus)
         risk = pipe.risk_model.total(self.ag.compile(), self.ag)
         if self.policy == "aqdo":
             cfg.weights = self.weights.weights(risk)
@@ -133,11 +137,13 @@ def run_episode(topology: Topology, policy: str = "aqdo", steps: int = 8,
                 config: OptimizationConfig | None = None, solver: str = "qaoa",
                 solver_kw: dict | None = None, initial: list[str] | None = None,
                 true_effectiveness: dict | None = None, seed: int = 0, detector=None,
-                max_qubits: int = 12, env_kw: dict | None = None) -> dict:
+                max_qubits: int = 12, env_kw: dict | None = None,
+                risk_model: str = "propagation", candidate_focus: str = "risk") -> dict:
     """Simulate an attack campaign against one defense policy; return the trajectory."""
     env = AttackEnvironment(topology, true_effectiveness, initial=initial, seed=seed,
                             detector=detector, **(env_kw or {}))
-    ctl = AQDOController(topology, config, policy, solver, solver_kw, max_qubits=max_qubits)
+    ctl = AQDOController(topology, config, policy, solver, solver_kw, max_qubits=max_qubits,
+                         risk_model=risk_model, candidate_focus=candidate_focus)
     first = env.step()
     ctl.observe(first.observations)
     new_det = bool(first.observations)
