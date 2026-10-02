@@ -1,0 +1,85 @@
+{
+  "experiment": "experiment1_ml",
+  "timestamp": "2026-10-02 06:38:35",
+  "platform": "Linux-6.18.44-fc-v51-x86_64-with-glibc2.39",
+  "python": "3.11.15",
+  "source": "SYNTHETIC flows (pipeline validation only - not a dataset result)",
+  "protocol": "stratified 75/25 hold-out",
+  "reports": [
+    {
+      "model": "random_forest",
+      "accuracy": 0.88867,
+      "precision_macro": 0.93544,
+      "recall_macro": 0.72265,
+      "f1_macro": 0.78267,
+      "roc_auc_binary": 0.97093,
+      "false_positive_rate": 0.00564,
+      "false_negative_rate": 0.29619,
+      "train_time_s": 1.87224,
+      "inference_time_ms_per_1k": 35.29911,
+      "n_train": 9000,
+      "n_test": 3000,
+      "classes": [
+        "BENIGN",
+        "BOTNET",
+        "BRUTE_FORCE",
+        "DDOS",
+        "DOS",
+        "EXPLOIT",
+        "INFILTRATION",
+        "RECON",
+        "WEB_ATTACK"
+      ]
+    },
+    {
+      "model": "hist_gradient_boosting",
+      "accuracy": 0.93967,
+      "precision_macro": 0.93589,
+      "recall_macro": 0.8753,
+      "f1_macro": 0.90174,
+      "roc_auc_binary": 0.98129,
+      "false_positive_rate": 0.01949,
+      "false_negative_rate": 0.1219,
+      "train_time_s": 5.17605,
+      "inference_time_ms_per_1k": 49.64768,
+      "n_train": 9000,
+      "n_test": 3000,
+      "classes": [
+        "BENIGN",
+        "BOTNET",
+        "BRUTE_FORCE",
+        "DDOS",
+        "DOS",
+        "EXPLOIT",
+        "INFILTRATION",
+        "RECON",
+        "WEB_ATTACK"
+      ]
+    },
+    {
+      "model": "mlp",
+      "accuracy": 0.88867,
+      "precision_macro": 0.8355,
+      "recall_macro": 0.82648,
+      "f1_macro": 0.82956,
+      "roc_auc_binary": 0.95372,
+      "false_positive_rate": 0.07179,
+      "false_negative_rate": 0.15143,
+      "train_time_s": 2.06722,
+      "inference_time_ms_per_1k": 2.48727,
+      "n_train": 9000,
+      "n_test": 3000,
+      "classes": [
+        "BENIGN",
+        "BOTNET",
+        "BRUTE_FORCE",
+        "DDOS",
+        "DOS",
+        "EXPLOIT",
+        "INFILTRATION",
+        "RECON",
+        "WEB_ATTACK"
+      ]
+    }
+  ]
+}
