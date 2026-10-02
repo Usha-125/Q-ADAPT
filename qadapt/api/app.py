@@ -41,7 +41,7 @@ app = FastAPI(title="Q-ADAPT API", version=__version__,
               description="Hybrid quantum-classical adaptive cyber-defense decision engine")
 app.add_middleware(CORSMiddleware, allow_origins=["*"], allow_methods=["*"], allow_headers=["*"])
 
-storage = Storage(os.environ.get("QADAPT_DB", ":memory:"))
+storage = Storage(os.environ.get("QADAPT_DB", ":memory:"))  # set QADAPT_DB to persist
 session = SOCSession()
 session.reset()
 
