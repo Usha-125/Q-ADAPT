@@ -86,6 +86,21 @@ class AttackGraph:
             if self.g.has_edge(u, v):
                 self.g[u][v]["p"] *= 1.0 - f
 
+    def apply_defenses(self, actions, effectiveness: dict | None = None) -> None:
+        """Reset edges to their base probabilities, then apply ``actions``.
+
+        ``effectiveness`` (ActionType -> eff) overrides each action's nominal
+        effectiveness, which lets the adaptive engine re-derive the defended
+        graph whenever its effectiveness estimates are updated.
+        """
+        for u, v in self.g.edges:
+            self.g[u][v]["p"] = self.g[u][v]["base_p"]
+        for a in actions:
+            eff = (effectiveness or {}).get(a.type, a.effectiveness)
+            for (u, v), f in a.edge_effects.items():
+                if self.g.has_edge(u, v):
+                    self.g[u][v]["p"] *= 1.0 - eff * f
+
     def reduce_threat(self, factors: dict[str, float]) -> None:
         for n, f in factors.items():
             if n in self.threat:
