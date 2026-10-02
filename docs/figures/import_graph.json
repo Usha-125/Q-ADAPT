@@ -1,0 +1,76 @@
+{
+  "adaptive_engine": {
+    "attack_graph": 4,
+    "core": 6,
+    "defense_engine": 1,
+    "ml_engine": 1,
+    "pipeline": 1
+  },
+  "api": {
+    "adaptive_engine": 2,
+    "attack_graph": 5,
+    "core": 3,
+    "ml_engine": 1,
+    "optimization": 1,
+    "pipeline": 1,
+    "quantum_engine": 1,
+    "risk_engine": 1
+  },
+  "attack_graph": {
+    "core": 3
+  },
+  "benchmarks": {
+    "attack_graph": 1,
+    "classical_baselines": 1,
+    "core": 2,
+    "defense_engine": 1,
+    "optimization": 1,
+    "pipeline": 1
+  },
+  "classical_baselines": {
+    "optimization": 1,
+    "quantum_engine": 1
+  },
+  "cli": {
+    "adaptive_engine": 2,
+    "attack_graph": 2,
+    "benchmarks": 1,
+    "core": 2,
+    "ml_engine": 2,
+    "pipeline": 1
+  },
+  "defense_engine": {
+    "attack_graph": 2,
+    "core": 3,
+    "risk_engine": 1
+  },
+  "explainability": {
+    "optimization": 1,
+    "risk_engine": 1
+  },
+  "ml_engine": {
+    "core": 1
+  },
+  "optimization": {
+    "core": 2,
+    "defense_engine": 2,
+    "quantum_engine": 1
+  },
+  "pipeline": {
+    "attack_graph": 2,
+    "classical_baselines": 1,
+    "core": 2,
+    "defense_engine": 1,
+    "explainability": 1,
+    "optimization": 1,
+    "quantum_engine": 1,
+    "risk_engine": 1
+  },
+  "quantum_engine": {
+    "optimization": 1
+  },
+  "risk_engine": {
+    "attack_graph": 3,
+    "core": 2
+  }
+}

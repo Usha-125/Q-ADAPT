@@ -23,6 +23,17 @@ Detect → Understand → Predict → Optimize → Defend → Learn
 
 ---
 
+## Documentation
+
+| Document | Contents |
+|---|---|
+| 📘 **[Complete project documentation](docs/PROJECT_DOCUMENTATION.md)** | Problem, proposed solution, innovation and research contributions, patent/IP points, tech stack, architecture and sequence diagrams, import graph, user flow, algorithms, data model, API, demo with screenshots, results, testing, limitations and roadmap |
+| [Results report](docs/RESULTS_REPORT.md) | Every experiment table and figure, training curves, worked example |
+| [Methodology](docs/METHODOLOGY.md) | Full mathematical model |
+| [Architecture](docs/ARCHITECTURE.md) · [Datasets](docs/DATASETS.md) · [Roadmap](docs/ROADMAP.md) | Design decisions, data sources, status |
+
+![Q-ADAPT dashboard: defense plan](docs/screenshots/06-defense-plan.png)
+
 ## Highlights
 
 | Layer | What is implemented |
@@ -214,7 +225,7 @@ with p = 2 (approximation ratio 0.976, optimal state amplified 28× over uniform
 | RQ5: noise | The approximation ratio falls from 0.97 (ideal) to about 0.79 at the high noise level. The recommended plan matched the ideal one in 30–40% of runs at high noise (0% at p = 3), and deeper circuits degrade more (Exp. 5). |
 | RQ6/H5: adaptation | Re-optimizing on state change cut cumulative loss by about 50% on the demo network and 69% on the 40-node enterprise compared with a static plan (p < 0.002), and nearly eliminated critical-asset losses. **Effectiveness learning and risk-appetite re-weighting (full AQDO) added no significant gain over plain re-optimization** (Exp. 6). |
 | Ablation | Adding the attack graph to ML-only alerting gives a significant improvement (p = 0.0003 demo, 0.04 enterprise). Adaptation gives the largest one (F vs E, p < 0.002). The choice of single-shot optimizer (classical vs QAOA) made no significant difference (Exp. 8). |
-| RQ7: scalability | Attack graphs up to 500 nodes build and propagate in milliseconds, and batched portfolio scoring stays sub-millisecond (Exp. 2). QAOA itself is limited to about 20 simulated qubits, which pre-screening handles. |
+| RQ7: scalability | At 500 nodes (13,268 edges) the graph builds in 127 ms, risk propagates in 2 ms, scoring a candidate plan takes about 4 ms in batch, and path analysis takes 0.6 s (Exp. 2). QAOA itself is limited to about 20 simulated qubits, which pre-screening handles. |
 
 **Bottom line:** the decision-engine formulation (graph-aware risk, fitted QUBO, adaptive
 re-optimization) delivers most of the value. QAOA is a viable, feasibility-preserving
