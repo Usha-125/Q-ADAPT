@@ -62,7 +62,18 @@ def gate_counts(q: QUBO, p: int) -> dict:
     n_1q = q.n + p * (n_z + q.n)  # H layer + (RZ fields + RX mixer) per layer
     n_2q = p * 2 * n_zz  # each ZZ term -> CX RZ CX
     depth_ub = 1 + p * (3 * n_zz + 2)  # serial upper bound
-    return {"n_1q": n_1q, "n_2q": n_2q, "n_zz_terms": n_zz, "depth_upper_bound": depth_ub}
+    # scheduled depth: ZZ terms on disjoint qubit pairs run in parallel; a greedy
+    # edge colouring of the interaction graph gives the number of ZZ rounds
+    import networkx as nx
+    iu, ju = np.nonzero(np.abs(np.triu(ising.J, 1)) > 1e-12)
+    if len(iu):
+        lg = nx.line_graph(nx.Graph(list(zip(iu.tolist(), ju.tolist(), strict=True))))
+        rounds = max(nx.greedy_color(lg, strategy="largest_first").values()) + 1
+    else:
+        rounds = 0
+    depth = 1 + p * (3 * rounds + 2)
+    return {"n_1q": n_1q, "n_2q": n_2q, "n_zz_terms": n_zz, "zz_rounds": rounds,
+            "depth_scheduled": depth, "depth_upper_bound": depth_ub}
 
 
 def transpiled_depth(q: QUBO, p: int) -> dict | None:
@@ -176,12 +187,14 @@ class QAOASolver(Solver):
                  shots: int | None = 2048, restarts: int = 3, maxiter: int = 200,
                  cvar_alpha: float = 1.0, init: str = "interp", seed: int = 0,
                  warm_start: np.ndarray | None = None, polish: bool = False,
-                 top_k: int = 64, qubo_kwargs: dict | None = None):
+                 top_k: int = 64, qubo_kwargs: dict | None = None,
+                 transpile_report: bool = False):
         self.p, self.backend, self.noise, self.shots = p, backend, noise, shots
         self.restarts, self.maxiter, self.cvar_alpha = restarts, maxiter, cvar_alpha
         self.init, self.seed, self.warm_start = init, seed, warm_start
         self.polish, self.top_k = polish, top_k
         self.qubo_kwargs = qubo_kwargs or {}
+        self.transpile_report = transpile_report
         self.name = f"qaoa_p{p}" + ("" if get_noise(noise).is_ideal else f"_{get_noise(noise).name}")
         self.last_params: np.ndarray | None = None
 
@@ -255,8 +268,8 @@ class QAOASolver(Solver):
             ks_opt = np.flatnonzero(np.isclose(eng.energies, e_min))
             p_opt = float(probs[ks_opt].sum())
             amplification = p_opt / (len(ks_opt) / probs.size)
-            td = transpiled_depth(q, self.p) if q.n <= 22 else None
-            depth = td["depth"] if td else gate_counts(q, self.p)["depth_upper_bound"]
+            td = transpiled_depth(q, self.p) if self.transpile_report else None
+            depth = td["depth"] if td else gate_counts(q, self.p)["depth_scheduled"]
         elif self.backend in ("qiskit", "aer"):
             from qadapt.quantum_engine.qiskit_backend import QiskitQAOARunner
             runner = QiskitQAOARunner(q, self.p, self.noise, self.shots or 2048, self.seed,

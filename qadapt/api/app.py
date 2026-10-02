@@ -30,7 +30,12 @@ from qadapt.attack_graph.visualizer import to_cytoscape
 from qadapt.core.config import ObjectiveWeights, OptimizationConfig
 from qadapt.core.models import ThreatAssessment
 from qadapt.pipeline import SOLVERS, QAdaptPipeline, make_solver
+from qadapt.quantum_engine import qiskit_available
 from qadapt.risk_engine import RiskModel
+
+# Import Qiskit / Aer on the main thread: initialising their native extensions
+# for the first time from a request worker thread has caused segfaults.
+QISKIT = qiskit_available()
 
 app = FastAPI(title="Q-ADAPT API", version=__version__,
               description="Hybrid quantum-classical adaptive cyber-defense decision engine")
@@ -70,8 +75,7 @@ def _paths(limit: int = 8):
 # ---------------------------------------------------------------------------
 @app.get("/api/health")
 def health():
-    from qadapt.quantum_engine import qiskit_available
-    return {"status": "ok", "version": __version__, "qiskit": qiskit_available(),
+    return {"status": "ok", "version": __version__, "qiskit": QISKIT,
             "solvers": list(SOLVERS)}
 
 
