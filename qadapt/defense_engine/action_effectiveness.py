@@ -69,11 +69,16 @@ class DefenseEvaluator:
         X = np.atleast_2d(X).astype(float)
         return np.exp(X @ self.L_edge), np.exp(X @ self.L_node)
 
-    def residual_risk(self, X: np.ndarray) -> np.ndarray | float:
+    def residual_risk(self, X: np.ndarray, cache: bool = True) -> np.ndarray | float:
         """Residual total risk for one portfolio (n,) or a batch (B, n)."""
         X = np.asarray(X)
         single = X.ndim == 1
         X2 = np.atleast_2d(X).astype(np.int8)
+        if not cache:
+            out = np.concatenate([
+                np.atleast_1d(self.risk_model.total(self.cg, self.ag, *self.multipliers(X2[s:s + 1024])))
+                for s in range(0, len(X2), 1024)])
+            return float(out[0]) if single else out
         out = np.empty(len(X2))
         todo = []
         for b, row in enumerate(X2):

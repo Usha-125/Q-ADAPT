@@ -56,12 +56,12 @@ class DefenseProblem:
         return out
 
     # ---- ground truth ----------------------------------------------------------
-    def objective(self, X: np.ndarray) -> np.ndarray | float:
+    def objective(self, X: np.ndarray, cache: bool = True) -> np.ndarray | float:
         """True objective J(x) for one portfolio or a batch."""
         X = np.asarray(X)
         w = self.config.weights
         ev = self.evaluator
-        r = ev.residual_risk(X)
+        r = ev.residual_risk(X, cache=cache)
         rel = np.asarray(r) / ev.base_risk if ev.base_risk > 0 else np.asarray(r) * 0
         Xf = np.atleast_2d(X).astype(float)
         out = (w.alpha * np.atleast_1d(rel) + w.beta * Xf @ ev.cost + w.gamma * Xf @ ev.time
@@ -76,6 +76,40 @@ class DefenseProblem:
 
     def feasible(self, x: np.ndarray) -> bool:
         return not self.violations(x)
+
+    def feasible_batch(self, X: np.ndarray) -> np.ndarray:
+        """Vectorised feasibility for a batch of portfolios."""
+        X = np.atleast_2d(np.asarray(X)).round().astype(int)
+        ok = np.ones(len(X), dtype=bool)
+        for _, w, lim in self.constraints():
+            ok &= X @ w <= lim + 1e-9
+        pol = self.policy
+        for i, j in pol.conflicts:
+            ok &= ~((X[:, i] == 1) & (X[:, j] == 1))
+        for i, j in pol.prerequisites:
+            ok &= ~((X[:, i] == 1) & (X[:, j] == 0))
+        for i in pol.forbidden:
+            ok &= X[:, i] == 0
+        for i in pol.mandatory:
+            ok &= X[:, i] == 1
+        return ok
+
+    def violation_amount(self, X: np.ndarray) -> np.ndarray:
+        """Continuous violation measure (0 when feasible) for penalty-based heuristics."""
+        X = np.atleast_2d(np.asarray(X)).round().astype(int)
+        v = np.zeros(len(X))
+        for _, w, lim in self.constraints():
+            v += np.maximum(0.0, X @ w - lim) / max(lim, 1e-9)
+        pol = self.policy
+        for i, j in pol.conflicts:
+            v += (X[:, i] & X[:, j])
+        for i, j in pol.prerequisites:
+            v += X[:, i] * (1 - X[:, j])
+        for i in pol.forbidden:
+            v += X[:, i]
+        for i in pol.mandatory:
+            v += 1 - X[:, i]
+        return v
 
     def metrics(self, x: np.ndarray) -> PortfolioMetrics:
         return self.evaluator.metrics(x)
@@ -92,7 +126,7 @@ class DefenseProblem:
         """Pick the best candidate: feasible first, then lowest true objective."""
         cands = np.unique(np.atleast_2d(candidates).round().astype(int), axis=0)
         objs = np.atleast_1d(self.objective(cands))
-        feas = np.array([self.feasible(c) for c in cands])
+        feas = self.feasible_batch(cands)
         key = np.where(feas, objs, objs + 1e6)
         i = int(np.argmin(key))
         return cands[i], float(objs[i]), bool(feas[i])
