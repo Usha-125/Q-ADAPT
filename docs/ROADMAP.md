@@ -24,8 +24,8 @@
    status check, not as an advantage.
 3. **Larger instances.** Decompose by attack-path clusters instead of global
    pre-screening, and compare against MILP on 50–200 actions.
-4. **Learning signal.** Experiments 6 and 8 show that re-optimization carries most of
-   the adaptive benefit. Test longer campaigns and stronger effectiveness mis-specification
+4. **Learning signal.** Experiments 6 and 8 show that re-optimization carries all of
+   the measured adaptive benefit. Test longer campaigns and stronger effectiveness mis-specification
    to see whether Bayesian learning and re-weighting add a significant gain on top.
 5. **Calibration.** Replace assumed edge probabilities with data such as EPSS scores and
    incident timelines.

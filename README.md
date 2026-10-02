@@ -157,6 +157,27 @@ docs/                   architecture, methodology, datasets, experiments, roadma
 tests/                  pytest suite
 ```
 
+## Results summary
+
+These numbers come from `python -m experiments.run_all` with fixed seeds; the full tables
+are in [`results/`](results/). Everything is classical simulation on synthetic
+enterprises, and the ML row uses synthetic flows. The results are reported as they came
+out, including the unfavourable ones.
+
+| Question | Finding |
+|---|---|
+| RQ3: can defense selection be a constrained QUBO? | Yes. The fitted quadratic surrogate tracks the true propagated risk closely: Spearman 0.997–0.999 on held-out portfolios. Unbalanced penalization kept the QUBO minimizer feasible in 100% of constraint scenarios with no extra qubits. Slack encoding needed 4 more qubits per constraint and its minimizer was feasible in only 50–75% of cases (Exp. 7). |
+| RQ4: QAOA vs classical | QAOA was optimal on 100% of instances with 6–8 actions and 90% with 10. At 12–14 actions (256 shots), p = 2 had a mean optimality gap of about 5%. **Simulated annealing and the genetic algorithm were optimal on every instance** and are significantly better than QAOA p = 2 (Wilcoxon p = 0.019). QAOA p = 2 is significantly better than naive score ranking (p = 1.5e-7) and equal-budget random sampling (p = 3.6e-6), and statistically tied with greedy and MILP. The approximation ratio rises with p (0.96 → 0.98), and the optimal state is amplified 5–80× over uniform (Exp. 3/4). |
+| RQ5: noise | The approximation ratio falls from 0.97 (ideal) to about 0.79 at the high noise level. The recommended plan matched the ideal one in 30–40% of runs at high noise (0% at p = 3), and deeper circuits degrade more (Exp. 5). |
+| RQ6/H5: adaptation | Re-optimizing on state change cut cumulative loss by about 50% on the demo network and 69% on the 40-node enterprise compared with a static plan (p < 0.002), and nearly eliminated critical-asset losses. **Effectiveness learning and risk-appetite re-weighting (full AQDO) added no significant gain over plain re-optimization** (Exp. 6). |
+| Ablation | Adding the attack graph to ML-only alerting gives a significant improvement (p = 0.0003 demo, 0.04 enterprise). Adaptation gives the largest one (F vs E, p < 0.002). The choice of single-shot optimizer (classical vs QAOA) made no significant difference (Exp. 8). |
+| RQ7: scalability | Attack graphs up to 500 nodes build and propagate in milliseconds, and batched portfolio scoring stays sub-millisecond (Exp. 2). QAOA itself is limited to about 20 simulated qubits, which pre-screening handles. |
+
+**Bottom line:** the decision-engine formulation (graph-aware risk, fitted QUBO, adaptive
+re-optimization) delivers most of the value. QAOA is a viable, feasibility-preserving
+solver for small instances but, as expected today, does not beat good classical
+heuristics.
+
 ## Scientific positioning and claims
 
 Q-ADAPT is set up to avoid the common pitfalls in quantum-security research:
