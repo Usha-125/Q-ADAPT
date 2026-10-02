@@ -30,7 +30,8 @@ quantum = ["qiskit>=1.0", "qiskit-aer>=0.14"]
 xgboost = ["xgboost>=2.0"]
 api = ["fastapi>=0.110", "uvicorn>=0.27"]
 dev = ["pytest>=7.4", "httpx>=0.27", "ruff>=0.4"]
-all = ["qadapt[quantum,xgboost,api,dev]"]
+report = ["matplotlib>=3.7"]
+all = ["qadapt[quantum,xgboost,api,dev,report]"]
 
 [project.scripts]
 qadapt = "qadapt.cli:main"

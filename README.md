@@ -159,13 +159,56 @@ tests/                  pytest suite
 
 ## Results summary
 
-These numbers come from `python -m experiments.run_all` with fixed seeds; the full tables
-are in [`results/`](results/). Everything is classical simulation on synthetic
-enterprises, and the ML row uses synthetic flows. The results are reported as they came
-out, including the unfavourable ones.
+> 📄 **Full results document:** [docs/RESULTS_REPORT.md](docs/RESULTS_REPORT.md). It covers the
+> worked example, training accuracy, learning curves, confusion matrix, ROC, feature importance,
+> every experiment table, 15 figures and the conclusions.
+> Regenerate it with `python -m experiments.run_all && python -m experiments.make_report`.
+
+These numbers come from fixed seeds. Everything is a classical simulation on synthetic
+enterprises, and the ML scores use synthetic flows (see the data notice in the report). The
+results are reported as they came out, including the unfavourable ones.
+
+### Worked example: one run of `qadapt demo`
+
+Input: the ML engine flags **WEB-01** (web attack, 94%) and **APP-01** (exploit, 91%) on the
+14-asset demo enterprise. Q-ADAPT builds a 12-qubit QUBO (surrogate fidelity 0.986) and runs QAOA
+with p = 2 (approximation ratio 0.976, optimal state amplified 28× over uniform). It recommends:
+
+* ✅ **Revoke credentials on APP-01**: 32.5% risk reduction on its own; the downstream database exposure is high
+* ✅ **Block malicious IP 203.0.113.7**: 20.4% risk reduction at low cost
+* ✖ *Isolate APP-01*: rejected as largely redundant with revoking credentials, at higher disruption
+
+| | before | after |
+|---|---|---|
+| network risk | 79.5% | **34.8%** (−56.2%) |
+| attack paths to critical assets | 19 | **14** |
+
+![asset risk before and after](docs/figures/example_asset_risk.png)
+
+### ML threat detection: training and test scores (synthetic flows)
+
+| model | train acc. | test acc. | F1 (macro) | ROC-AUC | FPR | FNR |
+|---|---|---|---|---|---|---|
+| Random Forest | 1.000 | 0.889 | 0.783 | 0.971 | 0.006 | 0.296 |
+| **Gradient Boosting** | 1.000 | **0.940** | **0.902** | **0.981** | 0.020 | 0.122 |
+| MLP neural net | 0.942 | 0.889 | 0.830 | 0.954 | 0.072 | 0.151 |
+
+![learning curves](docs/figures/ml_learning_curves.png)
+
+### Key figures
+
+| | |
+|---|---|
+| ![gap](docs/figures/opt_gap_vs_size.png) | ![qaoa](docs/figures/qaoa_metrics.png) |
+| ![noise](docs/figures/noise.png) | ![adaptive](docs/figures/adaptive_loss_over_time.png) |
+
+![ablation](docs/figures/ablation.png)
+
+### Findings by research question
 
 | Question | Finding |
 |---|---|
+| RQ1: ML threat detection | Gradient boosting performs best: 94.0% test accuracy, macro F1 0.90 and ROC-AUC 0.98, on synthetic flows. WEB_ATTACK is the weakest class (F1 0.59) because it is often mistaken for benign traffic. The run on the real datasets is still pending. |
 | RQ3: can defense selection be a constrained QUBO? | Yes. The fitted quadratic surrogate tracks the true propagated risk closely: Spearman 0.997–0.999 on held-out portfolios. Unbalanced penalization kept the QUBO minimizer feasible in 100% of constraint scenarios with no extra qubits. Slack encoding needed 4 more qubits per constraint and its minimizer was feasible in only 50–75% of cases (Exp. 7). |
 | RQ4: QAOA vs classical | QAOA was optimal on 100% of instances with 6–8 actions and 90% with 10. At 12–14 actions (256 shots), p = 2 had a mean optimality gap of about 5%. **Simulated annealing and the genetic algorithm were optimal on every instance** and are significantly better than QAOA p = 2 (Wilcoxon p = 0.019). QAOA p = 2 is significantly better than naive score ranking (p = 1.5e-7) and equal-budget random sampling (p = 3.6e-6), and statistically tied with greedy and MILP. The approximation ratio rises with p (0.96 → 0.98), and the optimal state is amplified 5–80× over uniform (Exp. 3/4). |
 | RQ5: noise | The approximation ratio falls from 0.97 (ideal) to about 0.79 at the high noise level. The recommended plan matched the ideal one in 30–40% of runs at high noise (0% at p = 3), and deeper circuits degrade more (Exp. 5). |
